@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LIFE RPG
 
-## Getting Started
+人生をRPGとして記録するライフログツール。
 
-First, run the development server:
+## 起動方法
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# -> http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+または `start.bat` をダブルクリック。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 機能
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **行動ログ入力**: 自由テキストで今日の行動を記録
+- **EXP・レベルシステム**: 行動に応じて経験値を獲得、レベルアップ
+- **ステータス**: HP / 集中力 / 体力 / 知力
+- **AIコメント**: 行動後にゲーム風コメントを表示
+- **デイリークエスト**: 毎日3つのクエストを達成して追加報酬
+- **称号システム**: 条件達成で称号を解除・装備可能
 
-## Learn More
+## 入力例
 
-To learn more about Next.js, take a look at the following resources:
+```
+副業 1時間
+散歩 30分
+読書 45分
+筋トレ 1時間
+瞑想 10分
+夜更かし
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## カテゴリと効果
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| カテゴリ | キーワード例 | 効果 |
+|---------|------------|------|
+| 副業 | 副業、作業、開発、プログラミング | EXP+、INT+、STR+ |
+| 運動 | 運動、筋トレ、散歩、ランニング | HP+、STR+ |
+| 学習 | 読書、勉強、英語、資格 | INT+、集中力+ |
+| 瞑想 | 瞑想、休憩、リラックス | HP+、集中力+ |
+| 睡眠 | 睡眠、仮眠、昼寝 | HP大回復 |
+| デバフ | 夜更かし、SNS、だらだら | HP-、集中力- |
 
-## Deploy on Vercel
+## データ保存
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+LocalStorage に保存。ブラウザのデータをクリアするとリセットされる。
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 技術構成
+
+- Next.js 16 (App Router)
+- TypeScript
+- Tailwind CSS v4
+- shadcn/ui
+- LocalStorage（外部依存なし）
