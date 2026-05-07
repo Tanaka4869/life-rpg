@@ -1,1 +1,130 @@
 @AGENTS.md
+
+# LIFE RPG — セッション引き継ぎ情報
+
+## プロジェクト概要
+
+`C:\my-factory\life-rpg` にある、日々の行動をRPG風に記録するライフログWebアプリ。
+「タスク管理」ではなく「人生をゲームとして楽しむ体験」を最優先にしている。
+
+## デプロイ情報
+
+- **本番URL**: https://life-rpg-flax.vercel.app/
+- **GitHubリポジトリ**: https://github.com/Tanaka4869/life-rpg.git
+- **デプロイ**: GitHubにpushすると Vercel が自動デプロイ
+
+コード修正後の反映手順:
+```bash
+git add .
+git commit -m "変更内容"
+git push
+```
+
+## 技術構成
+
+| 項目 | 採用技術 |
+|------|---------|
+| フレームワーク | Next.js 16 (App Router) |
+| 言語 | TypeScript |
+| スタイリング | Tailwind CSS v4 |
+| UIコンポーネント | shadcn/ui |
+| データ永続化 | LocalStorage（外部サービス依存なし） |
+| PWA | manifest.json |
+
+## ファイル構成と役割
+
+```
+life-rpg/
+├── app/
+│   ├── layout.tsx        # PWAメタデータ・フォント設定
+│   ├── page.tsx          # メインページ・全状態管理・ゲームロジック統合
+│   └── globals.css       # ダークRPGテーマ・スクロールバー
+├── components/
+│   ├── StatusPanel.tsx   # レベル・EXPバー・HP・ステータス表示
+│   ├── ActionInput.tsx   # 行動入力フォーム・クイック入力ボタン
+│   ├── CommentBox.tsx    # 行動後のゲーム風コメント・レベルアップ演出
+│   ├── QuestPanel.tsx    # デイリークエスト一覧・達成状態
+│   ├── TitlePanel.tsx    # 称号一覧・装備切替
+│   ├── LogHistory.tsx    # 行動履歴（直近10件）
+│   └── HintPanel.tsx     # ステータスの育て方（折りたたみ式）
+├── lib/
+│   ├── types.ts          # 全型定義（PlayerStatus / ActionLog / Quest / Title）
+│   ├── gameEngine.ts     # 行動テキスト解析・EXP計算・レベル計算
+│   ├── storage.ts        # LocalStorage読み書き・デイリーリセット処理
+│   └── quests.ts         # クエスト定義・日付シードによるランダム生成
+├── data/
+│   └── titles.ts         # 称号定義15種・解除条件関数
+├── public/
+│   └── manifest.json     # PWAマニフェスト
+├── SPEC.md               # アプリケーション仕様書（コード変更時は必ず更新）
+└── CLAUDE.md             # このファイル
+```
+
+## 画面・タブ構成
+
+ヘッダー固定（LIFE RPG タイトル / LV表示 / EXPバー）の下に4タブ。
+
+| タブ | 内容 |
+|------|------|
+| ✏️ ACTION（起動時デフォルト） | 行動入力フォーム・コメント表示・行動履歴 |
+| ⚡ STATUS | レベル・ステータス・HINTパネル（折りたたみ） |
+| 📋 QUEST | デイリークエスト3つ・達成状態 |
+| 🏅 TITLES | 取得済み称号・装備切替 |
+
+## ゲームシステムの核心
+
+### 行動解析（lib/gameEngine.ts）
+- キーワードマッチングでカテゴリ判定（WORK / EXERCISE / STUDY / MEDITATE / SLEEP / DEBUFF / UNKNOWN）
+- 正規表現で時間抽出（「X時間Y分」「X分」「Xh」など、未記入はデフォルト30分）
+- カテゴリ×時間でEXP・ステータス変化を計算
+
+### EXPレート
+| カテゴリ | EXP/時間 |
+|---------|---------|
+| WORK | 50 |
+| STUDY | 40 |
+| EXERCISE | 30 |
+| MEDITATE | 20 |
+| SLEEP | 10 |
+| DEBUFF | −20（固定） |
+
+### レベル計算式
+```
+次のレベルに必要なEXP = 現在レベル × 150
+```
+
+### AI化への準備
+`gameEngine.ts` の `parseAction()` 関数のインターフェースを変えずに、将来 Claude API 呼び出しに差し替えられる設計。
+
+## データ保存
+
+- LocalStorageキー: `life-rpg-player`
+- 型: `PlayerStatus`（lib/types.ts 参照）
+- デイリーリセット: 日付変更を検知したら自動でクエストを更新・HP回復・ストリーク更新
+
+## 開発ルール（必ず守ること）
+
+1. **コードを修正したら `SPEC.md` も必ず同時に更新する**（バージョン番号と更新日も）
+2. デザインはダーク/サイバーパンク/RPG風を維持する
+3. 外部サービス依存は増やさない（LocalStorage完結を維持）
+4. 過度な複雑化をしない・拡張しやすい構成を保つ
+
+## 現在のバージョン
+
+**v1.4.0**
+
+| バージョン | 変更内容 |
+|-----------|---------|
+| v1.0.0 | 初期実装（行動入力・EXP・レベル・ステータス・コメント・クエスト・称号・PWA） |
+| v1.1.0 | ACTIONをタブ化・LOGをACTIONタブに統合・他タブでは入力フォームを非表示に |
+| v1.2.0 | ヘッダー右上にEXP表示を追加 |
+| v1.3.0 | ヘッダー右上のEXP表示をEXPバーに変更 |
+| v1.4.0 | STATUSタブにHINTパネル（折りたたみ式）を追加 |
+
+## ローカル起動
+
+```bash
+cd C:\my-factory\life-rpg
+npm run dev
+# → http://localhost:3000
+```
