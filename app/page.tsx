@@ -9,14 +9,19 @@ import TitlePanel from "@/components/TitlePanel";
 import LogHistory from "@/components/LogHistory";
 import HintPanel from "@/components/HintPanel";
 import { parseAction, calcLevel } from "@/lib/gameEngine";
-import { loadStatus, saveStatus } from "@/lib/storage";
+import { loadStatus, saveStatus, hasSaveData, resetAllData, initNewPlayer } from "@/lib/storage";
 import { checkQuestCompletion, getQuestById } from "@/lib/quests";
 import { checkNewTitles, getTitleById } from "@/data/titles";
 import type { PlayerStatus, ActionResult } from "@/lib/types";
 
 type Tab = "action" | "status" | "quest" | "titles";
+type Screen = "title" | "menu" | "game";
 
 export default function Home() {
+  const [screen, setScreen] = useState<Screen>("title");
+  const [hasSave, setHasSave] = useState(false);
+  const [pushPulse, setPushPulse] = useState(true);
+
   const [status, setStatus] = useState<PlayerStatus | null>(null);
   const [lastResult, setLastResult] = useState<ActionResult | null>(null);
   const [levelUp, setLevelUp] = useState(false);
@@ -25,7 +30,23 @@ export default function Home() {
   const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
+    setHasSave(hasSaveData());
+  }, []);
+
+  const handlePush = useCallback(() => {
+    setPushPulse(false);
+    setScreen("menu");
+  }, []);
+
+  const handleContinue = useCallback(() => {
     setStatus(loadStatus());
+    setScreen("game");
+  }, []);
+
+  const handleNewGame = useCallback(() => {
+    resetAllData();
+    setStatus(initNewPlayer());
+    setScreen("game");
   }, []);
 
   const handleAction = useCallback(
@@ -59,7 +80,6 @@ export default function Home() {
           ],
         };
 
-        // MaxHP grows with strength
         updated.maxHp = 100 + Math.floor(updated.strength / 5) * 10;
         updated.hp = Math.min(updated.hp, updated.maxHp);
 
@@ -71,7 +91,6 @@ export default function Home() {
         }
         updated.level = newLevel;
 
-        // Quest completion
         const newCompletedIds = [...status.completedQuestIds];
         let questBonus = 0;
         for (const qid of status.todayQuestIds) {
@@ -88,7 +107,6 @@ export default function Home() {
         }
         updated.completedQuestIds = newCompletedIds;
 
-        // Title check
         const gained = checkNewTitles(updated);
         if (gained.length > 0) {
           updated.titles = [...updated.titles, ...gained];
@@ -115,6 +133,91 @@ export default function Home() {
     [status]
   );
 
+  // ── タイトル画面 ──────────────────────────────────────────────
+  if (screen === "title") {
+    return (
+      <div
+        className="min-h-screen bg-slate-950 flex flex-col items-center justify-center cursor-pointer select-none"
+        onClick={handlePush}
+      >
+        <div className="text-center space-y-6 px-8">
+          <div className="space-y-2">
+            <h1 className="text-6xl font-black font-mono text-cyan-400 tracking-widest drop-shadow-[0_0_24px_rgba(34,211,238,0.5)]">
+              LIFE RPG
+            </h1>
+            <p className="text-slate-500 font-mono text-sm tracking-widest">
+              人生をゲームとして生きろ
+            </p>
+          </div>
+
+          <div className="pt-8">
+            <div
+              className={`text-cyan-300 font-mono text-lg tracking-[0.3em] transition-opacity duration-700 ${
+                pushPulse ? "animate-pulse" : "opacity-0"
+              }`}
+            >
+              ── PUSH START ──
+            </div>
+          </div>
+        </div>
+
+        <div className="absolute bottom-8 text-slate-700 font-mono text-xs tracking-widest">
+          TAP ANYWHERE TO START
+        </div>
+      </div>
+    );
+  }
+
+  // ── スタートメニュー画面 ─────────────────────────────────────
+  if (screen === "menu") {
+    return (
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center">
+        <div className="w-full max-w-sm px-8 space-y-8">
+          <div className="text-center space-y-1">
+            <h1 className="text-3xl font-black font-mono text-cyan-400 tracking-widest">
+              LIFE RPG
+            </h1>
+            <p className="text-slate-600 font-mono text-xs tracking-widest">
+              人生をゲームとして生きろ
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            <button
+              onClick={handleContinue}
+              disabled={!hasSave}
+              className={`w-full py-4 font-mono font-bold text-lg tracking-widest border-2 transition-all duration-200 rounded-sm ${
+                hasSave
+                  ? "border-cyan-500 text-cyan-400 hover:bg-cyan-500/10 hover:shadow-[0_0_16px_rgba(34,211,238,0.3)]"
+                  : "border-slate-700 text-slate-600 cursor-not-allowed"
+              }`}
+            >
+              つづきから
+              {!hasSave && (
+                <span className="block text-xs text-slate-700 font-normal tracking-normal mt-1">
+                  セーブデータなし
+                </span>
+              )}
+            </button>
+
+            <button
+              onClick={handleNewGame}
+              className="w-full py-4 font-mono font-bold text-lg tracking-widest border-2 border-red-700 text-red-400 hover:bg-red-700/10 hover:shadow-[0_0_16px_rgba(239,68,68,0.3)] transition-all duration-200 rounded-sm"
+            >
+              はじめから
+              {hasSave && (
+                <span className="block text-xs text-red-700 font-normal tracking-normal mt-1">
+                  ※ セーブデータは削除されます
+                </span>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── ゲーム画面 ───────────────────────────────────────────────
   if (!status) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center">
@@ -132,7 +235,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
-      {/* Header */}
       <header className="border-b border-slate-800 bg-slate-950/90 backdrop-blur sticky top-0 z-10">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <div>
@@ -179,7 +281,6 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Main content */}
       <main className="max-w-2xl mx-auto px-4 py-4 space-y-4 pb-8">
         {activeTab === "action" && (
           <>

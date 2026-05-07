@@ -37,7 +37,7 @@ export function saveStatus(status: PlayerStatus): void {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(status));
 }
 
-function initNewPlayer(): PlayerStatus {
+export function initNewPlayer(): PlayerStatus {
   const today = todayString();
   const quests = generateDailyQuests();
   const status: PlayerStatus = {
@@ -83,4 +83,14 @@ export function todayString(): string {
 export function resetAllData(): void {
   if (typeof window === "undefined") return;
   localStorage.removeItem(STORAGE_KEY);
+}
+
+export function hasSaveData(): boolean {
+  if (typeof window === "undefined") return false;
+  return localStorage.getItem(STORAGE_KEY) !== null;
+}
+
+export function initAndLoadNewPlayer(): PlayerStatus {
+  resetAllData();
+  return initNewPlayer();
 }
