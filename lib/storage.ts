@@ -24,6 +24,7 @@ const DEFAULT_STATUS: PlayerStatus = {
   gachaStones: 30,
   gachaTickets: 0,
   gachaHistory: [],
+  inventory: {},
   bossHp: 0,
   bossMaxHp: 0,
   lastBossDate: "",
@@ -35,6 +36,7 @@ function migrateSaveData(status: PlayerStatus): PlayerStatus {
   if (status.gachaStones === undefined) status.gachaStones = 30;
   if (status.gachaTickets === undefined) status.gachaTickets = 0;
   if (!status.gachaHistory) status.gachaHistory = [];
+  if (!status.inventory) status.inventory = {};
   if (status.bossHp === undefined) status.bossHp = 0;
   if (status.bossMaxHp === undefined) status.bossMaxHp = 0;
   if (!status.lastBossDate) status.lastBossDate = "";
