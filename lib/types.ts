@@ -109,6 +109,8 @@ export interface PlayerStatus {
   gachaStones: number;
   gachaTickets: number;
   gachaHistory: GachaRecord[];
+  // インベントリ (itemId -> 所持枚数)
+  inventory: Record<string, number>;
   // バトル
   bossHp: number;
   bossMaxHp: number;

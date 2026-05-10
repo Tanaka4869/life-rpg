@@ -12,6 +12,7 @@ import StatGrowthPanel from "@/components/StatGrowthPanel";
 import OneActionPanel from "@/components/OneActionPanel";
 import GachaPanel from "@/components/GachaPanel";
 import BattlePanel from "@/components/BattlePanel";
+import InventoryPanel from "@/components/InventoryPanel";
 import { parseAction, calcLevel } from "@/lib/gameEngine";
 import { loadStatus, saveStatus, hasSaveData, resetAllData, initNewPlayer } from "@/lib/storage";
 import { applyStatDeltas } from "@/lib/statEngine";
@@ -163,12 +164,35 @@ export default function Home() {
   const handleGachaRoll = useCallback(
     (results: GachaRecord[], cost: { stones: number; tickets: number }) => {
       if (!status) return;
+      const newInventory = { ...status.inventory };
+      for (const r of results) {
+        newInventory[r.itemId] = (newInventory[r.itemId] ?? 0) + 1;
+      }
       const updated: PlayerStatus = {
         ...status,
         gachaStones: status.gachaStones - cost.stones,
         gachaTickets: status.gachaTickets - cost.tickets,
         gachaHistory: [...status.gachaHistory, ...results].slice(-200),
+        inventory: newInventory,
       };
+      saveStatus(updated);
+      setStatus(updated);
+    },
+    [status]
+  );
+
+  const handleUseItem = useCallback(
+    (itemId: string) => {
+      if (!status) return;
+      const current = status.inventory[itemId] ?? 0;
+      if (current <= 0) return;
+      const newInventory = { ...status.inventory };
+      if (current === 1) {
+        delete newInventory[itemId];
+      } else {
+        newInventory[itemId] = current - 1;
+      }
+      const updated: PlayerStatus = { ...status, inventory: newInventory };
       saveStatus(updated);
       setStatus(updated);
     },
@@ -402,11 +426,17 @@ export default function Home() {
 
         {/* ガチャ */}
         {activeTab === "gacha" && (
-          <GachaPanel
-            stones={status.gachaStones}
-            tickets={status.gachaTickets}
-            onRoll={handleGachaRoll}
-          />
+          <>
+            <GachaPanel
+              stones={status.gachaStones}
+              tickets={status.gachaTickets}
+              onRoll={handleGachaRoll}
+            />
+            <InventoryPanel
+              inventory={status.inventory}
+              onUse={handleUseItem}
+            />
+          </>
         )}
 
         {/* 実績 */}
