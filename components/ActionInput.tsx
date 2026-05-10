@@ -2,41 +2,54 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 
 interface Props {
   onSubmit: (text: string) => void;
   disabled?: boolean;
 }
 
-const EXAMPLES = [
-  "副業 1時間",
-  "散歩 30分",
-  "読書 45分",
-  "筋トレ 1時間",
-  "瞑想 10分",
-  "夜更かし",
+const TIME_OPTIONS: { label: string; value: string }[] = [
+  { label: "10分",   value: "10分" },
+  { label: "15分",   value: "15分" },
+  { label: "30分",   value: "30分" },
+  { label: "45分",   value: "45分" },
+  { label: "1時間",  value: "1時間" },
+  { label: "1.5h",   value: "1時間30分" },
+  { label: "2時間",  value: "2時間" },
+  { label: "3時間",  value: "3時間" },
+  { label: "なし",   value: "" },
 ];
 
+const ACTION_SHORTCUTS = [
+  "副業", "勉強", "読書", "筋トレ", "散歩",
+  "瞑想", "掃除", "料理", "夜更かし",
+];
+
+const DEFAULT_TIME = "30分";
+
 export default function ActionInput({ onSubmit, disabled }: Props) {
-  const [text, setText] = useState("");
+  const [action, setAction] = useState("");
+  const [selectedTime, setSelectedTime] = useState(DEFAULT_TIME);
 
   function handleSubmit() {
-    const trimmed = text.trim();
+    const trimmed = action.trim();
     if (!trimmed) return;
-    onSubmit(trimmed);
-    setText("");
+    const text = selectedTime ? `${trimmed} ${selectedTime}` : trimmed;
+    onSubmit(text);
+    setAction("");
+    setSelectedTime(DEFAULT_TIME);
   }
 
-  function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-    if (e.key === "Enter" && !e.shiftKey) {
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") {
       e.preventDefault();
       handleSubmit();
     }
   }
 
   return (
-    <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3">
+    <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-4">
+      {/* ヘッダー */}
       <div className="flex items-center gap-2">
         <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
         <h2 className="text-sm font-mono text-slate-400 uppercase tracking-widest">
@@ -44,30 +57,64 @@ export default function ActionInput({ onSubmit, disabled }: Props) {
         </h2>
       </div>
 
-      <Textarea
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder={"今日の行動を入力...\n例: 副業 1時間 / 散歩 30分"}
-        className="bg-slate-900 border-slate-700 text-slate-100 placeholder:text-slate-600 font-mono text-sm resize-none focus:border-cyan-700 focus:ring-0 min-h-[80px]"
-        disabled={disabled}
-      />
-
-      <div className="flex flex-wrap gap-1.5">
-        {EXAMPLES.map((ex) => (
-          <button
-            key={ex}
-            onClick={() => setText(ex)}
-            className="text-xs px-2 py-0.5 rounded border border-slate-700 text-slate-500 hover:border-cyan-700 hover:text-cyan-400 transition-colors font-mono"
-          >
-            {ex}
-          </button>
-        ))}
+      {/* 行動入力 */}
+      <div className="space-y-1.5">
+        <label className="text-xs font-mono text-slate-500 tracking-wider">
+          ▸ 行動
+        </label>
+        <input
+          type="text"
+          value={action}
+          onChange={(e) => setAction(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="例: 副業 / 筋トレ / 掃除"
+          className="w-full bg-slate-900 border border-slate-700 rounded-md px-3 py-2 text-slate-100 placeholder:text-slate-600 font-mono text-sm focus:outline-none focus:border-cyan-700 transition-colors"
+          disabled={disabled}
+        />
+        {/* ショートカット */}
+        <div className="flex flex-wrap gap-1.5 pt-0.5">
+          {ACTION_SHORTCUTS.map((s) => (
+            <button
+              key={s}
+              onClick={() => setAction(s)}
+              className={`text-xs px-2 py-0.5 rounded border font-mono transition-colors ${
+                action === s
+                  ? "border-cyan-600 text-cyan-400 bg-cyan-900/30"
+                  : "border-slate-700 text-slate-500 hover:border-slate-500 hover:text-slate-400"
+              }`}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
       </div>
 
+      {/* 時間選択 */}
+      <div className="space-y-1.5">
+        <label className="text-xs font-mono text-slate-500 tracking-wider">
+          ▸ 時間
+        </label>
+        <div className="grid grid-cols-5 gap-1.5">
+          {TIME_OPTIONS.map(({ label, value }) => (
+            <button
+              key={label}
+              onClick={() => setSelectedTime(value)}
+              className={`py-1.5 rounded text-xs font-mono border transition-all duration-150 ${
+                selectedTime === value
+                  ? "border-cyan-500 text-cyan-300 bg-cyan-900/40 shadow-[0_0_8px_rgba(34,211,238,0.2)]"
+                  : "border-slate-700 text-slate-500 hover:border-slate-500 hover:text-slate-400"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 記録ボタン */}
       <Button
         onClick={handleSubmit}
-        disabled={disabled || !text.trim()}
+        disabled={disabled || !action.trim()}
         className="w-full bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold font-mono tracking-wider transition-all duration-200 disabled:opacity-40"
       >
         ▶ 記録する
