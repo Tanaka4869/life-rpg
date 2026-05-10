@@ -60,6 +60,35 @@ export interface Title {
   condition: (status: PlayerStatus) => boolean;
 }
 
+// ── ガチャシステム ────────────────────────────────────────────────
+export type GachaRarity = "COMMON" | "UNCOMMON" | "RARE" | "SUPER_RARE";
+
+export interface GachaItem {
+  id: string;
+  name: string;
+  rarity: GachaRarity;
+  icon: string;
+}
+
+export interface GachaRecord {
+  id: string;
+  itemId: string;
+  itemName: string;
+  rarity: GachaRarity;
+  timestamp: string;
+}
+
+// ── バトルシステム ────────────────────────────────────────────────
+export interface BossEnemy {
+  id: string;
+  name: string;
+  icon: string;
+  description: string;
+  baseHp: number;
+  attack: number;
+  reward: { exp: number; stones: number };
+}
+
 export interface PlayerStatus {
   level: number;
   exp: number;
@@ -76,4 +105,13 @@ export interface PlayerStatus {
   todayQuestIds: string[];
   logs: ActionLog[];
   stats: PlayerStats;
+  // ガチャ通貨
+  gachaStones: number;
+  gachaTickets: number;
+  gachaHistory: GachaRecord[];
+  // バトル
+  bossHp: number;
+  bossMaxHp: number;
+  lastBossDate: string;
+  bossDefeats: number;
 }

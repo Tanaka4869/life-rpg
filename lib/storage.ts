@@ -1,6 +1,7 @@
 import type { PlayerStatus } from "./types";
 import { generateDailyQuests } from "./quests";
 import { DEFAULT_PLAYER_STATS } from "./statEngine";
+import { getTodayBoss } from "@/data/bosses";
 
 const STORAGE_KEY = "life-rpg-player";
 
@@ -20,16 +21,33 @@ const DEFAULT_STATUS: PlayerStatus = {
   todayQuestIds: [],
   logs: [],
   stats: { ...DEFAULT_PLAYER_STATS },
+  gachaStones: 30,
+  gachaTickets: 0,
+  gachaHistory: [],
+  bossHp: 0,
+  bossMaxHp: 0,
+  lastBossDate: "",
+  bossDefeats: 0,
 };
+
+function migrateSaveData(status: PlayerStatus): PlayerStatus {
+  if (!status.stats) status.stats = { ...DEFAULT_PLAYER_STATS };
+  if (status.gachaStones === undefined) status.gachaStones = 30;
+  if (status.gachaTickets === undefined) status.gachaTickets = 0;
+  if (!status.gachaHistory) status.gachaHistory = [];
+  if (status.bossHp === undefined) status.bossHp = 0;
+  if (status.bossMaxHp === undefined) status.bossMaxHp = 0;
+  if (!status.lastBossDate) status.lastBossDate = "";
+  if (status.bossDefeats === undefined) status.bossDefeats = 0;
+  return status;
+}
 
 export function loadStatus(): PlayerStatus {
   if (typeof window === "undefined") return DEFAULT_STATUS;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return initNewPlayer();
-    const status: PlayerStatus = JSON.parse(raw);
-    // 旧セーブデータに stats フィールドがない場合のマイグレーション
-    if (!status.stats) status.stats = { ...DEFAULT_PLAYER_STATS };
+    const status: PlayerStatus = migrateSaveData(JSON.parse(raw));
     return checkDailyReset(status);
   } catch {
     return initNewPlayer();
@@ -44,11 +62,15 @@ export function saveStatus(status: PlayerStatus): void {
 export function initNewPlayer(): PlayerStatus {
   const today = todayString();
   const quests = generateDailyQuests();
+  const boss = getTodayBoss(1);
   const status: PlayerStatus = {
     ...DEFAULT_STATUS,
     lastLoginDate: today,
     streak: 1,
     todayQuestIds: quests.map((q) => q.id),
+    bossHp: boss.baseHp,
+    bossMaxHp: boss.baseHp,
+    lastBossDate: today,
   };
   saveStatus(status);
   return status;
@@ -58,14 +80,13 @@ function checkDailyReset(status: PlayerStatus): PlayerStatus {
   const today = todayString();
   if (status.lastLoginDate === today) return status;
 
-  // 連続ログインチェック
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
   const wasYesterday = status.lastLoginDate === yesterday.toISOString().slice(0, 10);
   const newStreak = wasYesterday ? status.streak + 1 : 1;
 
-  // デイリークエスト更新
   const quests = generateDailyQuests();
+  const boss = getTodayBoss(status.level);
 
   const updated: PlayerStatus = {
     ...status,
@@ -73,8 +94,13 @@ function checkDailyReset(status: PlayerStatus): PlayerStatus {
     streak: newStreak,
     completedQuestIds: [],
     todayQuestIds: quests.map((q) => q.id),
-    // HP若干回復
     hp: Math.min(status.maxHp, status.hp + 20),
+    // デイリーログインボーナス石
+    gachaStones: status.gachaStones + 10,
+    // ボスリセット
+    bossHp: boss.baseHp,
+    bossMaxHp: boss.baseHp,
+    lastBossDate: today,
   };
   saveStatus(updated);
   return updated;
