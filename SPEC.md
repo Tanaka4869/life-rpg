@@ -198,6 +198,8 @@ interface Title {
 | STUDY | 読書、勉強、学習、英語、資格、リサーチ |
 | MEDITATE | 瞑想、休憩、リラックス、マインドフルネス |
 | SLEEP | 睡眠、仮眠、昼寝、就寝 |
+| HOUSEWORK | 掃除、洗濯、片付け、整理整頓、大掃除、ゴミ捨て、アイロン |
+| COOKING | 料理、自炊、調理、炊事、弁当、クッキング、作り置き |
 | DEBUFF | 夜更かし、徹夜、飲酒、SNS、だらだら、サボり |
 
 #### 時間抽出（正規表現）
@@ -222,6 +224,8 @@ EXP = (カテゴリのEXP/時間レート) × (入力時間 / 60分)
 | WORK | 50 EXP/h |
 | STUDY | 40 EXP/h |
 | EXERCISE | 30 EXP/h |
+| COOKING | 30 EXP/h |
+| HOUSEWORK | 25 EXP/h |
 | MEDITATE | 20 EXP/h |
 | SLEEP | 10 EXP/h |
 | DEBUFF | −20 EXP（固定ペナルティ） |
