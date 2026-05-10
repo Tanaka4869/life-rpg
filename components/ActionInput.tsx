@@ -72,12 +72,12 @@ export default function ActionInput({ onSubmit, disabled }: Props) {
           disabled={disabled}
         />
         {/* ショートカット */}
-        <div className="flex flex-wrap gap-1.5 pt-0.5">
+        <div className="grid grid-cols-3 gap-2 pt-0.5">
           {ACTION_SHORTCUTS.map((s) => (
             <button
               key={s}
               onClick={() => setAction(s)}
-              className={`text-xs px-2 py-0.5 rounded border font-mono transition-colors ${
+              className={`py-2.5 rounded border font-mono text-sm transition-colors ${
                 action === s
                   ? "border-cyan-600 text-cyan-400 bg-cyan-900/30"
                   : "border-slate-700 text-slate-500 hover:border-slate-500 hover:text-slate-400"
@@ -94,12 +94,12 @@ export default function ActionInput({ onSubmit, disabled }: Props) {
         <label className="text-xs font-mono text-slate-500 tracking-wider">
           ▸ 時間
         </label>
-        <div className="grid grid-cols-5 gap-1.5">
+        <div className="grid grid-cols-3 gap-2">
           {TIME_OPTIONS.map(({ label, value }) => (
             <button
               key={label}
               onClick={() => setSelectedTime(value)}
-              className={`py-1.5 rounded text-xs font-mono border transition-all duration-150 ${
+              className={`py-3 rounded text-sm font-mono border transition-all duration-150 ${
                 selectedTime === value
                   ? "border-cyan-500 text-cyan-300 bg-cyan-900/40 shadow-[0_0_8px_rgba(34,211,238,0.2)]"
                   : "border-slate-700 text-slate-500 hover:border-slate-500 hover:text-slate-400"

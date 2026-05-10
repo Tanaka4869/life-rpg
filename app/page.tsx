@@ -9,6 +9,7 @@ import TitlePanel from "@/components/TitlePanel";
 import LogHistory from "@/components/LogHistory";
 import HintPanel from "@/components/HintPanel";
 import StatGrowthPanel from "@/components/StatGrowthPanel";
+import OneActionPanel from "@/components/OneActionPanel";
 import { parseAction, calcLevel } from "@/lib/gameEngine";
 import { loadStatus, saveStatus, hasSaveData, resetAllData, initNewPlayer } from "@/lib/storage";
 import { applyStatDeltas } from "@/lib/statEngine";
@@ -290,6 +291,7 @@ export default function Home() {
         {activeTab === "action" && (
           <>
             <ActionInput onSubmit={handleAction} disabled={processing} />
+            <OneActionPanel onSubmit={handleAction} disabled={processing} />
             <CommentBox result={lastResult} levelUp={levelUp} newTitles={newTitleIds} />
             <LogHistory logs={status.logs} />
           </>
