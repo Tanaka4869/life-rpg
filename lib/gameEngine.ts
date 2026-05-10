@@ -1,4 +1,5 @@
 import type { ActionCategory, ActionResult } from "./types";
+import { calcStatDeltas } from "./statEngine";
 
 // ----- Keyword maps -----
 const CATEGORY_KEYWORDS: Record<ActionCategory, string[]> = {
@@ -18,6 +19,14 @@ const CATEGORY_KEYWORDS: Record<ActionCategory, string[]> = {
     "瞑想", "休憩", "リラックス", "マインドフルネス", "深呼吸", "ひとり時間",
   ],
   SLEEP: ["睡眠", "仮眠", "昼寝", "就寝", "寝た", "ねた"],
+  HOUSEWORK: [
+    "掃除", "洗濯", "片付け", "整理整頓", "大掃除", "洗い物", "掃き掃除",
+    "拭き掃除", "ゴミ捨て", "アイロン", "干した", "たたんだ",
+  ],
+  COOKING: [
+    "料理", "自炊", "調理", "炊事", "弁当", "お弁当", "クッキング",
+    "仕込み", "作り置き", "下ごしらえ", "献立",
+  ],
   DEBUFF: [
     "夜更かし", "徹夜", "飲酒", "お酒", "ゲーム", "SNS", "だらだら",
     "サボり", "怠惰", "暴飲暴食", "ジャンクフード",
@@ -53,6 +62,18 @@ const COMMENTS: Record<ActionCategory, string[]> = {
     "休むことも戦略だ。英雄は消耗しない。",
     "静寂の中に答えがある。",
     "内なる平和を見つけた。それは最強の盾だ。",
+  ],
+  HOUSEWORK: [
+    "家が整った。環境が整えば、心も整う。",
+    "家事力が上昇した。生活の土台を固めた。",
+    "清潔な空間が最高の回復地点だ。",
+    "縁の下の力持ち。その努力が土台を支える。",
+  ],
+  COOKING: [
+    "自炊した。体は自分が食べたもので作られる。",
+    "料理スキルが磨かれた。健康の源は食にある。",
+    "手料理は最高の健康投資だ。",
+    "自炊力が上昇した。外食に頼らない力を手に入れた。",
   ],
   SLEEP: [
     "十分な睡眠は最強の回復魔法だ。",
@@ -115,11 +136,13 @@ const EXP_PER_HOUR: Record<ActionCategory, number> = {
   STUDY: 40,
   MEDITATE: 20,
   SLEEP: 10,
+  HOUSEWORK: 25,
+  COOKING: 30,
   DEBUFF: -20,
   UNKNOWN: 15,
 };
 
-function calcStatDeltas(
+function calcLegacyDeltas(
   category: ActionCategory,
   minutes: number
 ): Pick<ActionResult, "hpDelta" | "focusDelta" | "strengthDelta" | "intelligenceDelta"> {
@@ -135,6 +158,10 @@ function calcStatDeltas(
       return { hpDelta: Math.round(3 * factor), focusDelta: Math.round(5 * factor), strengthDelta: 0, intelligenceDelta: Math.round(1 * factor) };
     case "SLEEP":
       return { hpDelta: Math.round(10 * factor), focusDelta: Math.round(8 * factor), strengthDelta: Math.round(2 * factor), intelligenceDelta: Math.round(2 * factor) };
+    case "HOUSEWORK":
+      return { hpDelta: Math.round(1 * factor), focusDelta: Math.round(1 * factor), strengthDelta: 0, intelligenceDelta: 0 };
+    case "COOKING":
+      return { hpDelta: Math.round(2 * factor), focusDelta: 0, strengthDelta: 0, intelligenceDelta: Math.round(1 * factor) };
     case "DEBUFF":
       return { hpDelta: -Math.round(5 * factor), focusDelta: -Math.round(8 * factor), strengthDelta: 0, intelligenceDelta: 0 };
     default:
@@ -153,10 +180,11 @@ export function parseAction(text: string): ActionResult {
   const minutes = extractMinutes(text);
   const expPerHour = EXP_PER_HOUR[category];
   const expGained = Math.max(Math.round((expPerHour * minutes) / 60), category === "DEBUFF" ? -20 : 1);
-  const stats = calcStatDeltas(category, minutes);
+  const stats = calcLegacyDeltas(category, minutes);
+  const statDeltas = calcStatDeltas(category, minutes, text);
   const comment = pickComment(category);
 
-  return { category, minutes, expGained, ...stats, comment };
+  return { category, minutes, expGained, ...stats, statDeltas, comment };
 }
 
 // ----- Level calculation -----

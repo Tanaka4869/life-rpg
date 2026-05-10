@@ -1,8 +1,8 @@
 # LIFE RPG — アプリケーション仕様書
 
-**バージョン**: 1.5.0  
+**バージョン**: 1.6.0  
 **作成日**: 2026-05-07  
-**更新日**: 2026-05-07  
+**更新日**: 2026-05-10  
 **対象環境**: PCブラウザ / Androidブラウザ（PWA対応）
 
 ---
@@ -58,7 +58,8 @@ life-rpg/
 │   ├── page.tsx          # メインページ（状態管理・ゲームロジック統合）
 │   └── globals.css       # グローバルスタイル（ダークRPGテーマ）
 ├── components/
-│   ├── StatusPanel.tsx   # ステータス表示パネル
+│   ├── StatusPanel.tsx   # ステータス表示パネル（LV/EXP/HP/Focus）
+│   ├── StatGrowthPanel.tsx # キャラクターステータス成長パネル（8種）
 │   ├── ActionInput.tsx   # 行動入力フォーム
 │   ├── CommentBox.tsx    # AIコメント・演出表示
 │   ├── QuestPanel.tsx    # デイリークエスト一覧
@@ -66,11 +67,14 @@ life-rpg/
 │   └── LogHistory.tsx    # 行動履歴（直近10件）
 ├── components/ui/        # shadcn/ui 自動生成コンポーネント
 ├── lib/
-│   ├── types.ts          # 型定義
+│   ├── types.ts          # 型定義（StatKey / PlayerStats 含む）
 │   ├── gameEngine.ts     # 行動解析・EXP計算ロジック
+│   ├── statEngine.ts     # ステータス計算・適用ロジック
 │   ├── storage.ts        # LocalStorage管理・日次リセット
 │   └── quests.ts         # クエスト定義・生成
 ├── data/
+│   ├── statConfig.ts     # ステータス定義（表示名・アイコン・色）
+│   ├── actionStatMap.ts  # 行動→ステータスマッピング設定
 │   └── titles.ts         # 称号定義・解除条件
 ├── public/
 │   └── manifest.json     # PWAマニフェスト
@@ -118,6 +122,25 @@ interface ActionLog {
 }
 ```
 
+### 4.2.5 PlayerStats（キャラクターステータス）
+
+`PlayerStatus.stats` に格納。`Record<StatKey, number>` 型。
+
+| StatKey | 表示名 | 主な成長源 |
+|---------|--------|-----------|
+| `concentration` | 集中力 | WORK / STUDY / MEDITATE |
+| `intelligence` | 知力 | STUDY / プログラミング / 読書 |
+| `stamina` | 体力 | EXERCISE / SLEEP |
+| `health` | 健康力 | SLEEP / 料理 / 散歩 |
+| `housework` | 家事力 | 掃除 / 洗濯 |
+| `cooking` | 自炊力 | 料理 / 自炊 |
+| `muscular` | 筋力 | 筋トレ / 腕立て |
+| `execution` | 実行力 | WORK / あらゆる行動 |
+
+増加量は `data/actionStatMap.ts` で定義。入力時間（分）に比例してスケール。
+
+---
+
 ### 4.3 ActionCategory（行動カテゴリ）
 
 ```typescript
@@ -127,6 +150,8 @@ type ActionCategory =
   | "STUDY"     // 学習・読書
   | "MEDITATE"  // 瞑想・休憩
   | "SLEEP"     // 睡眠
+  | "HOUSEWORK" // 家事
+  | "COOKING"   // 料理・自炊
   | "DEBUFF"    // 夜更かし等
   | "UNKNOWN";  // 不明
 ```

@@ -4,8 +4,23 @@ export type ActionCategory =
   | "STUDY"
   | "MEDITATE"
   | "SLEEP"
+  | "HOUSEWORK"
+  | "COOKING"
   | "DEBUFF"
   | "UNKNOWN";
+
+// ── 新ステータスシステム ─────────────────────────────────────────
+export type StatKey =
+  | "concentration" // 集中力
+  | "intelligence"  // 知力
+  | "stamina"       // 体力
+  | "health"        // 健康力
+  | "housework"     // 家事力
+  | "cooking"       // 自炊力
+  | "muscular"      // 筋力
+  | "execution";    // 実行力
+
+export type PlayerStats = Record<StatKey, number>;
 
 export interface ActionResult {
   category: ActionCategory;
@@ -15,6 +30,7 @@ export interface ActionResult {
   focusDelta: number;
   strengthDelta: number;
   intelligenceDelta: number;
+  statDeltas: Partial<PlayerStats>;
   comment: string;
 }
 
@@ -59,4 +75,5 @@ export interface PlayerStatus {
   completedQuestIds: string[];
   todayQuestIds: string[];
   logs: ActionLog[];
+  stats: PlayerStats;
 }

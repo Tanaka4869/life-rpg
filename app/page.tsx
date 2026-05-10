@@ -8,11 +8,13 @@ import QuestPanel from "@/components/QuestPanel";
 import TitlePanel from "@/components/TitlePanel";
 import LogHistory from "@/components/LogHistory";
 import HintPanel from "@/components/HintPanel";
+import StatGrowthPanel from "@/components/StatGrowthPanel";
 import { parseAction, calcLevel } from "@/lib/gameEngine";
 import { loadStatus, saveStatus, hasSaveData, resetAllData, initNewPlayer } from "@/lib/storage";
+import { applyStatDeltas } from "@/lib/statEngine";
 import { checkQuestCompletion, getQuestById } from "@/lib/quests";
 import { checkNewTitles, getTitleById } from "@/data/titles";
-import type { PlayerStatus, ActionResult } from "@/lib/types";
+import type { PlayerStatus, ActionResult, PlayerStats } from "@/lib/types";
 
 type Tab = "action" | "status" | "quest" | "titles";
 type Screen = "title" | "menu" | "game";
@@ -24,6 +26,7 @@ export default function Home() {
 
   const [status, setStatus] = useState<PlayerStatus | null>(null);
   const [lastResult, setLastResult] = useState<ActionResult | null>(null);
+  const [lastStatDeltas, setLastStatDeltas] = useState<Partial<PlayerStats> | null>(null);
   const [levelUp, setLevelUp] = useState(false);
   const [newTitleIds, setNewTitleIds] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<Tab>("action");
@@ -67,6 +70,7 @@ export default function Home() {
           focus: Math.min(100, Math.max(0, status.focus + result.focusDelta)),
           strength: Math.max(1, status.strength + result.strengthDelta),
           intelligence: Math.max(1, status.intelligence + result.intelligenceDelta),
+          stats: applyStatDeltas(status.stats, result.statDeltas),
           logs: [
             ...status.logs,
             {
@@ -117,6 +121,7 @@ export default function Home() {
         saveStatus(updated);
         setStatus(updated);
         setLastResult(result);
+        setLastStatDeltas({ ...result.statDeltas });
         setProcessing(false);
       }, 300);
     },
@@ -292,6 +297,7 @@ export default function Home() {
         {activeTab === "status" && (
           <>
             <StatusPanel status={status} />
+            <StatGrowthPanel stats={status.stats} lastDeltas={lastStatDeltas} />
             <HintPanel />
           </>
         )}

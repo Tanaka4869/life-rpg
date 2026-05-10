@@ -1,5 +1,6 @@
 import type { PlayerStatus } from "./types";
 import { generateDailyQuests } from "./quests";
+import { DEFAULT_PLAYER_STATS } from "./statEngine";
 
 const STORAGE_KEY = "life-rpg-player";
 
@@ -18,6 +19,7 @@ const DEFAULT_STATUS: PlayerStatus = {
   completedQuestIds: [],
   todayQuestIds: [],
   logs: [],
+  stats: { ...DEFAULT_PLAYER_STATS },
 };
 
 export function loadStatus(): PlayerStatus {
@@ -26,6 +28,8 @@ export function loadStatus(): PlayerStatus {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return initNewPlayer();
     const status: PlayerStatus = JSON.parse(raw);
+    // 旧セーブデータに stats フィールドがない場合のマイグレーション
+    if (!status.stats) status.stats = { ...DEFAULT_PLAYER_STATS };
     return checkDailyReset(status);
   } catch {
     return initNewPlayer();
