@@ -2,18 +2,19 @@ import type { ActionCategory, ActionResult } from "./types";
 import { calcStatDeltas } from "./statEngine";
 
 // ----- Keyword maps -----
+// STUDY は WORK より前に定義する（「個人開発」を STUDY で捕捉するため）
 const CATEGORY_KEYWORDS: Record<ActionCategory, string[]> = {
+  STUDY: [
+    "読書", "勉強", "学習", "個人開発", "リサーチ", "調査", "授業", "講義",
+    "セミナー", "英語", "資格", "プログラミング学習", "動画学習",
+  ],
   WORK: [
-    "副業", "バイト", "仕事", "作業", "開発", "プログラミング", "コーディング",
+    "副業", "バイト", "仕事", "作業", "プログラミング", "コーディング",
     "ライティング", "ブログ", "執筆", "デザイン", "営業", "クライアント",
   ],
   EXERCISE: [
-    "運動", "筋トレ", "ジム", "散歩", "ランニング", "ウォーキング", "ヨガ",
+    "運動", "筋トレ", "ジム", "ランニング", "ウォーキング", "ヨガ",
     "サイクリング", "水泳", "ストレッチ", "スクワット", "腹筋", "腕立て",
-  ],
-  STUDY: [
-    "読書", "勉強", "学習", "リサーチ", "調査", "授業", "講義", "セミナー",
-    "英語", "資格", "プログラミング学習", "動画学習",
   ],
   MEDITATE: [
     "瞑想", "休憩", "リラックス", "マインドフルネス", "深呼吸", "ひとり時間",
@@ -130,14 +131,15 @@ function detectCategory(text: string): ActionCategory {
 }
 
 // ----- EXP and stat calculation -----
+// 基準: 仕事 1時間 = 学習/個人開発/読書 30分 = 筋トレ/掃除/料理 10分 = 瞑想 3分
 const EXP_PER_HOUR: Record<ActionCategory, number> = {
   WORK: 50,
-  EXERCISE: 30,
-  STUDY: 40,
-  MEDITATE: 20,
+  STUDY: 100,
+  EXERCISE: 300,
+  MEDITATE: 1000,
   SLEEP: 10,
-  HOUSEWORK: 25,
-  COOKING: 30,
+  HOUSEWORK: 300,
+  COOKING: 300,
   DEBUFF: -20,
   UNKNOWN: 15,
 };

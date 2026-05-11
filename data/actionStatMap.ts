@@ -80,7 +80,7 @@ export const KEYWORD_STAT_EFFECTS: Array<{
     effects: { stamina: 5, health: 3 },
   },
   {
-    keywords: ["水を飲む", "水を飲", "水分補給"],
+    keywords: ["水を飲む", "水を飲", "水分補給", "水飲む"],
     effects: { health: 12 },
   },
   {
