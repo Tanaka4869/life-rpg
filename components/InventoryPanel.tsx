@@ -9,7 +9,7 @@ interface Props {
   onUse: (itemId: string) => void;
 }
 
-const RARITY_ORDER: GachaRarity[] = ["SUPER_RARE", "RARE", "UNCOMMON", "COMMON"];
+const RARITY_ORDER: GachaRarity[] = ["ULTRA_RARE", "SUPER_RARE", "RARE", "UNCOMMON", "COMMON"];
 
 interface ConfirmState {
   itemId: string;

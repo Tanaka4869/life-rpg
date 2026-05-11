@@ -63,7 +63,7 @@ export interface Title {
 }
 
 // ── ガチャシステム ────────────────────────────────────────────────
-export type GachaRarity = "COMMON" | "UNCOMMON" | "RARE" | "SUPER_RARE";
+export type GachaRarity = "COMMON" | "UNCOMMON" | "RARE" | "SUPER_RARE" | "ULTRA_RARE";
 
 export interface GachaItem {
   id: string;
