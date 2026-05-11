@@ -60,11 +60,15 @@ export default function StatGrowthPanel({ stats, lastDeltas }: Props) {
                     <span className="text-xs font-mono text-slate-700 leading-none">
                       {labelEn}
                     </span>
-                    {tier > 0 && (
-                      <span className="text-xs font-mono text-cyan-700 leading-none">
-                        Tier.{tier + 1}
-                      </span>
-                    )}
+                    <span className={`text-xs font-bold font-mono leading-none px-1 rounded ${
+                      tier >= 2
+                        ? "text-yellow-300 bg-yellow-900/50"
+                        : tier === 1
+                        ? "text-cyan-400 bg-cyan-900/50"
+                        : "text-slate-500"
+                    }`}>
+                      Lv.{tier + 1}
+                    </span>
                   </div>
                 </div>
 
@@ -95,6 +99,9 @@ export default function StatGrowthPanel({ stats, lastDeltas }: Props) {
                   className={`h-full bg-gradient-to-r ${color} rounded-full transition-all duration-700`}
                   style={{ width: `${barPct}%` }}
                 />
+              </div>
+              <div className="text-right text-xs font-mono text-slate-700 mt-0.5">
+                {inTierValue} / {TIER_SIZE}
               </div>
 
               {/* ホバーで説明表示 */}
