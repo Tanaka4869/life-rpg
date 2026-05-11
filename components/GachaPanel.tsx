@@ -29,13 +29,14 @@ function GachaCardItem({
   index: number;
 }) {
   const s = RARITY_STYLES[record.rarity];
+  const isUR = record.rarity === "ULTRA_RARE";
   const isSR = record.rarity === "SUPER_RARE";
   const isRare = record.rarity === "RARE";
 
   return (
     <div
       className={`anim-gacha-card rounded-xl border-2 ${s.border} ${s.bg} ${
-        isSR ? "anim-sr-glow" : isRare ? "anim-rare-glow" : s.glow
+        isUR ? "anim-ur-glow" : isSR ? "anim-sr-glow" : isRare ? "anim-rare-glow" : s.glow
       } p-3 flex flex-col items-center gap-1 min-w-[88px]`}
       style={{ animationDelay: `${index * 80}ms` }}
     >
@@ -54,6 +55,39 @@ function GachaCardItem({
       >
         {RARITY_LABELS[record.rarity]}
       </span>
+    </div>
+  );
+}
+
+function UROverlay({ onDone }: { onDone: () => void }) {
+  useEffect(() => {
+    const t = setTimeout(onDone, 3200);
+    return () => clearTimeout(t);
+  }, [onDone]);
+
+  return (
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90">
+      <div
+        className="absolute inset-0"
+        style={{
+          background: "radial-gradient(ellipse at center, rgba(251,191,36,0.3) 0%, rgba(0,0,0,0.9) 70%)",
+        }}
+      />
+      <div className="relative flex flex-col items-center gap-3">
+        <div className="anim-shake text-8xl mb-2">👑</div>
+        <div
+          className="text-4xl font-black tracking-widest animate-pulse"
+          style={{ color: "#fbbf24", textShadow: "0 0 30px #fbbf24, 0 0 60px #f59e0b" }}
+        >
+          ★★★ ULTRA RARE ★★★
+        </div>
+        <div className="text-amber-200 text-base mt-1 tracking-wider font-bold">
+          🎊 おめでとうございます！！ 🎊
+        </div>
+        <div className="text-amber-400 text-sm tracking-widest animate-pulse">
+          超激レア排出！
+        </div>
+      </div>
     </div>
   );
 }
@@ -78,6 +112,7 @@ function SROverlay({ onDone }: { onDone: () => void }) {
 export default function GachaPanel({ stones, tickets, onRoll }: Props) {
   const [phase, setPhase] = useState<Phase>("idle");
   const [results, setResults] = useState<GachaRecord[]>([]);
+  const [showUROverlay, setShowUROverlay] = useState(false);
   const [showSROverlay, setShowSROverlay] = useState(false);
   const orbRef = useRef<HTMLDivElement>(null);
 
@@ -102,7 +137,9 @@ export default function GachaPanel({ stones, tickets, onRoll }: Props) {
       playSE(best);
       vibrate(best);
 
-      if (best === "SUPER_RARE") {
+      if (best === "ULTRA_RARE") {
+        setShowUROverlay(true);
+      } else if (best === "SUPER_RARE") {
         setShowSROverlay(true);
       }
 
@@ -122,12 +159,14 @@ export default function GachaPanel({ stones, tickets, onRoll }: Props) {
     UNCOMMON: "",
     RARE: "bg-yellow-950/30",
     SUPER_RARE: "bg-purple-950/40",
+    ULTRA_RARE: "bg-amber-950/50",
   };
 
   const bestRarity = results.length > 0 ? getHighestRarity(results) : "COMMON";
 
   return (
     <>
+      {showUROverlay && <UROverlay onDone={() => setShowUROverlay(false)} />}
       {showSROverlay && <SROverlay onDone={() => setShowSROverlay(false)} />}
 
       <div className="space-y-4">
@@ -212,13 +251,23 @@ export default function GachaPanel({ stones, tickets, onRoll }: Props) {
         {/* Results */}
         {phase === "reveal" && results.length > 0 && (
           <div className={`rounded-xl border-2 p-4 ${
-            bestRarity === "SUPER_RARE"
+            bestRarity === "ULTRA_RARE"
+              ? "border-amber-400 bg-amber-950/30"
+              : bestRarity === "SUPER_RARE"
               ? "border-purple-500 bg-purple-950/30"
               : bestRarity === "RARE"
               ? "border-yellow-500 bg-yellow-950/20"
               : "border-slate-700 bg-slate-900"
           } ${rarityBg[bestRarity]}`}>
             <div className="text-center mb-3">
+              {bestRarity === "ULTRA_RARE" && (
+                <p
+                  className="font-black tracking-widest text-sm animate-pulse"
+                  style={{ color: "#fbbf24", textShadow: "0 0 12px #fbbf24" }}
+                >
+                  ★★★ ULTRA RARE GET!!! ★★★
+                </p>
+              )}
               {bestRarity === "SUPER_RARE" && (
                 <p className="text-purple-300 font-black tracking-widest text-sm animate-pulse">
                   ★★ SUPER RARE GET!! ★★
@@ -255,9 +304,9 @@ export default function GachaPanel({ stones, tickets, onRoll }: Props) {
         <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-3">
           <p className="text-slate-500 font-mono text-xs mb-2 tracking-wider">排出率</p>
           <div className="space-y-1">
-            {(["SUPER_RARE", "RARE", "UNCOMMON", "COMMON"] as GachaRarity[]).map((r) => {
+            {(["ULTRA_RARE", "SUPER_RARE", "RARE", "UNCOMMON", "COMMON"] as GachaRarity[]).map((r) => {
               const s = RARITY_STYLES[r];
-              const weights: Record<GachaRarity, number> = { COMMON: 60, UNCOMMON: 30, RARE: 8, SUPER_RARE: 2 };
+              const weights: Record<GachaRarity, number> = { COMMON: 60, UNCOMMON: 29, RARE: 8, SUPER_RARE: 2, ULTRA_RARE: 1 };
               return (
                 <div key={r} className="flex justify-between text-xs font-mono">
                   <span className={s.text}>{RARITY_LABELS[r]}</span>

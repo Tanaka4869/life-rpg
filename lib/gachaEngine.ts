@@ -31,7 +31,7 @@ export function rollGacha(count: number): GachaRecord[] {
 }
 
 export function getHighestRarity(records: GachaRecord[]): GachaRarity {
-  const order: GachaRarity[] = ["COMMON", "UNCOMMON", "RARE", "SUPER_RARE"];
+  const order: GachaRarity[] = ["COMMON", "UNCOMMON", "RARE", "SUPER_RARE", "ULTRA_RARE"];
   return records.reduce((best, r) => {
     return order.indexOf(r.rarity) > order.indexOf(best) ? r.rarity : best;
   }, "COMMON" as GachaRarity);
@@ -63,6 +63,16 @@ export function playSE(rarity: GachaRarity): void {
         { freq: 880, type: "sawtooth", start: 0.36, dur: 0.3, vol: 0.35 },
         { freq: 1100, type: "sawtooth", start: 0.48, dur: 0.5, vol: 0.35 },
       ],
+      ULTRA_RARE: [
+        { freq: 330, type: "sawtooth", start: 0, dur: 0.15, vol: 0.4 },
+        { freq: 440, type: "sawtooth", start: 0.1, dur: 0.15, vol: 0.4 },
+        { freq: 554, type: "sawtooth", start: 0.2, dur: 0.15, vol: 0.4 },
+        { freq: 659, type: "sawtooth", start: 0.3, dur: 0.15, vol: 0.4 },
+        { freq: 880, type: "sawtooth", start: 0.4, dur: 0.2, vol: 0.45 },
+        { freq: 1100, type: "sawtooth", start: 0.55, dur: 0.2, vol: 0.45 },
+        { freq: 1320, type: "sawtooth", start: 0.7, dur: 0.4, vol: 0.5 },
+        { freq: 1760, type: "sine", start: 0.9, dur: 0.7, vol: 0.4 },
+      ],
     };
     const schedules = scheduleMap[rarity];
 
@@ -91,6 +101,7 @@ export function vibrate(rarity: GachaRarity): void {
     UNCOMMON: [100, 50, 100],
     RARE: [200, 80, 200, 80, 300],
     SUPER_RARE: [300, 80, 300, 80, 500, 80, 500],
+    ULTRA_RARE: [500, 100, 500, 100, 500, 100, 800, 100, 800, 100, 1000],
   };
   navigator.vibrate(patterns[rarity]);
 }
