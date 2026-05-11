@@ -79,4 +79,12 @@ export const KEYWORD_STAT_EFFECTS: Array<{
     keywords: ["サイクリング", "自転車"],
     effects: { stamina: 5, health: 3 },
   },
+  {
+    keywords: ["水を飲む", "水分補給", "水飲む"],
+    effects: { health: 3 },
+  },
+  {
+    keywords: ["肌ケア", "スキンケア", "保湿"],
+    effects: { health: 3 },
+  },
 ];
