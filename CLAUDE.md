@@ -20,6 +20,15 @@ git commit -m "変更内容"
 git push
 ```
 
+## GitHub CLI (gh) の利用
+
+`gh` コマンドは `C:\Program Files\GitHub CLI\gh.exe` にインストール済み。
+PowerShell では `gh` が PATH に入っていない場合があるため、フルパスで呼び出す:
+
+```powershell
+& "C:\Program Files\GitHub CLI\gh.exe" pr create --title "タイトル" --body "本文"
+```
+
 ## 技術構成
 
 | 項目 | 採用技術 |
