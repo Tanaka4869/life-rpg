@@ -22,7 +22,7 @@ const TIME_OPTIONS: { label: string; value: string }[] = [
 
 const ACTION_SHORTCUTS = [
   "仕事", "学習", "個人開発", "読書",
-  "筋トレ", "掃除", "料理",
+  "筋トレ", "散歩", "掃除", "料理",
 ];
 
 const DEFAULT_TIME = "30分";
