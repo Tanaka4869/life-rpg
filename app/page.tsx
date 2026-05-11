@@ -114,16 +114,6 @@ export default function Home() {
 
       setTimeout(() => {
         const result = parseAction(text);
-
-        // 瞑想は1日3回まで EXP 有効
-        if (result.category === "MEDITATE") {
-          const todayStr = new Date().toISOString().slice(0, 10);
-          const todayMeditateCount = status.logs.filter(
-            (log) => log.timestamp.startsWith(todayStr) && log.category === "MEDITATE"
-          ).length;
-          if (todayMeditateCount >= 3) result.expGained = 0;
-        }
-
         const prevLevel = calcLevel(status.exp).level;
         const prevTiers = Object.fromEntries(
           Object.entries(status.stats).map(([k, v]) => [k, Math.floor(v / 100)])

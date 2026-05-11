@@ -131,7 +131,7 @@ function detectCategory(text: string): ActionCategory {
 }
 
 // ----- EXP and stat calculation -----
-// 基準: 仕事 1時間 = 学習/個人開発/読書 30分 = 筋トレ/掃除/料理 10分 = 瞑想 3分（上限3回/日）
+// 基準: 仕事 1時間 = 学習/個人開発/読書 30分 = 筋トレ/掃除/料理 10分 = 瞑想 3分
 const EXP_PER_HOUR: Record<ActionCategory, number> = {
   WORK: 50,
   STUDY: 100,

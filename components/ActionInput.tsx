@@ -22,11 +22,15 @@ const TIME_OPTIONS: { label: string; value: string }[] = [
 
 const ACTION_SHORTCUTS = [
   "仕事", "学習", "個人開発", "読書",
-  "筋トレ", "瞑想", "掃除", "料理",
+  "筋トレ", "掃除", "料理",
 ];
 
 const SINGLE_ACTIONS: { label: string; text: string; icon: string }[] = [
-  { label: "睡眠 7時間+", text: "睡眠 7時間", icon: "🛌" },
+  { label: "睡眠 7h+",  text: "睡眠 7時間",  icon: "🛌" },
+  { label: "瞑想 3分",  text: "瞑想 3分",    icon: "🧘" },
+  { label: "水を飲む",  text: "水を飲む",     icon: "💧" },
+  { label: "肌ケア",    text: "肌ケア",       icon: "✨" },
+  { label: "ごみ捨て",  text: "ゴミ捨て 5分", icon: "🗑️" },
 ];
 
 const DEFAULT_TIME = "30分";
