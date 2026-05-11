@@ -49,6 +49,7 @@ export default function Home() {
   const [processing, setProcessing] = useState(false);
   const [showLevelUpModal, setShowLevelUpModal] = useState(false);
   const [showStatPopup, setShowStatPopup] = useState(false);
+  const [tierUpTickets, setTierUpTickets] = useState(0);
 
   useEffect(() => {
     if (screen !== "game") return;
@@ -114,6 +115,14 @@ export default function Home() {
       setTimeout(() => {
         const result = parseAction(text);
         const prevLevel = calcLevel(status.exp).level;
+        const prevTiers = Object.fromEntries(
+          Object.entries(status.stats).map(([k, v]) => [k, Math.floor(v / 100)])
+        );
+
+        const newStats = applyStatDeltas(status.stats, result.statDeltas);
+        const tierUpCount = Object.entries(newStats).filter(
+          ([k, v]) => Math.floor(v / 100) > (prevTiers[k] ?? 0)
+        ).length;
 
         let updated: PlayerStatus = {
           ...status,
@@ -122,9 +131,11 @@ export default function Home() {
           focus: Math.min(100, Math.max(0, status.focus + result.focusDelta)),
           strength: Math.max(1, status.strength + result.strengthDelta),
           intelligence: Math.max(1, status.intelligence + result.intelligenceDelta),
-          stats: applyStatDeltas(status.stats, result.statDeltas),
+          stats: newStats,
           // ガチャ石獲得 (EXP×10%、最低1)
           gachaStones: status.gachaStones + Math.max(1, Math.floor(Math.abs(result.expGained) * 0.1)),
+          // ティアアップ報酬チケット
+          gachaTickets: status.gachaTickets + tierUpCount,
           logs: [
             ...status.logs,
             {
@@ -184,6 +195,7 @@ export default function Home() {
         setStatus(updated);
         setLastResult(result);
         setLastStatDeltas({ ...result.statDeltas });
+        setTierUpTickets(tierUpCount);
         setShowStatPopup(true);
         setProcessing(false);
       }, 300);
@@ -361,6 +373,7 @@ export default function Home() {
         show={showStatPopup}
         result={lastResult}
         statDeltas={lastStatDeltas}
+        tierUpTickets={tierUpTickets}
         onClose={() => setShowStatPopup(false)}
       />
       {/* ── Header ── */}

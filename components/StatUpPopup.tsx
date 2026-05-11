@@ -32,10 +32,11 @@ interface Props {
   show: boolean;
   result: ActionResult | null;
   statDeltas: Partial<PlayerStats> | null;
+  tierUpTickets?: number;
   onClose: () => void;
 }
 
-export default function StatUpPopup({ show, result, statDeltas, onClose }: Props) {
+export default function StatUpPopup({ show, result, statDeltas, tierUpTickets = 0, onClose }: Props) {
   const [visible, setVisible] = useState(false);
   const [animIn, setAnimIn] = useState(false);
 
@@ -124,6 +125,14 @@ export default function StatUpPopup({ show, result, statDeltas, onClose }: Props
           )}
         </div>
 
+        {tierUpTickets > 0 && (
+          <div className="mx-4 mb-3 px-3 py-2 rounded-lg border border-yellow-600 bg-yellow-950/60 flex items-center gap-2">
+            <span className="text-base leading-none">🎫</span>
+            <span className="text-xs font-mono text-yellow-300 font-bold">
+              TIER UP! ガチャチケット ×{tierUpTickets} 獲得
+            </span>
+          </div>
+        )}
         <div className="text-center pb-2">
           <span className="text-xs font-mono text-slate-700">TAP TO DISMISS</span>
         </div>
