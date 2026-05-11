@@ -45,18 +45,6 @@ export default function CommentBox({ result, levelUp, newTitles }: Props) {
 
   return (
     <div className="space-y-2">
-      {/* Level up banner */}
-      {levelUp && (
-        <div className="bg-yellow-950 border border-yellow-500 rounded-xl p-3 animate-pulse">
-          <p className="text-yellow-400 font-bold font-mono text-center text-lg tracking-widest">
-            ★ LEVEL UP! ★
-          </p>
-          <p className="text-yellow-300 font-mono text-sm text-center">
-            新たなる力を手に入れた！
-          </p>
-        </div>
-      )}
-
       {/* New title banners */}
       {newTitles.map((tid) => (
         <div key={tid} className="bg-purple-950 border border-purple-500 rounded-xl p-3">
