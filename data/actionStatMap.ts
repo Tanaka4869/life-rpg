@@ -12,7 +12,7 @@ export const CATEGORY_STAT_EFFECTS: Record<ActionCategory, StatEffect> = {
   STUDY:    { intelligence: 4, concentration: 2 },
   MEDITATE: { concentration: 5, health: 1 },
   SLEEP:    { health: 4, stamina: 2, concentration: 1 },
-  HOUSEWORK: { housework: 5, execution: 1 },
+  HOUSEWORK: { housework: 4, cleanliness: 4, execution: 1 },
   COOKING:   { cooking: 5, health: 1 },
   DEBUFF:   { concentration: -4, health: -2, stamina: -1 },
   UNKNOWN:  { execution: 1 },
@@ -57,11 +57,19 @@ export const KEYWORD_STAT_EFFECTS: Array<{
   },
   {
     keywords: ["プログラミング", "コーディング", "開発", "コード"],
-    effects: { intelligence: 3, concentration: 3, execution: 2 },
+    effects: { intelligence: 3, concentration: 3, execution: 2, engineering: 5 },
   },
   {
     keywords: ["副業", "ライティング", "ブログ", "執筆"],
     effects: { execution: 4, intelligence: 1 },
+  },
+  {
+    keywords: ["掃除", "片付け", "整理整頓", "大掃除", "拭き掃除"],
+    effects: { cleanliness: 5, housework: 2 },
+  },
+  {
+    keywords: ["洗濯", "干した", "たたんだ", "アイロン"],
+    effects: { cleanliness: 4, housework: 3 },
   },
   {
     keywords: ["睡眠", "熟睡"],

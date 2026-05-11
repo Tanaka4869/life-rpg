@@ -78,4 +78,20 @@ export const STAT_DEFINITIONS: StatDef[] = [
     color: "from-cyan-700 to-cyan-400",
     description: "あらゆる行動記録で成長",
   },
+  {
+    key: "cleanliness",
+    label: "綺麗さ",
+    labelEn: "CLEAN",
+    icon: "✨",
+    color: "from-sky-700 to-sky-400",
+    description: "掃除・洗濯・片付け・整理整頓で成長",
+  },
+  {
+    key: "engineering",
+    label: "エンジニア力",
+    labelEn: "ENG",
+    icon: "💻",
+    color: "from-emerald-700 to-emerald-400",
+    description: "プログラミング・開発・コーディングで成長",
+  },
 ];

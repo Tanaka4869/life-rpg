@@ -14,6 +14,8 @@ export const DEFAULT_PLAYER_STATS: PlayerStats = {
   cooking: 0,
   muscular: 0,
   execution: 0,
+  cleanliness: 0,
+  engineering: 0,
 };
 
 /**
