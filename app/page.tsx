@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import StatusPanel from "@/components/StatusPanel";
 import ActionInput from "@/components/ActionInput";
 import CommentBox from "@/components/CommentBox";
@@ -45,6 +45,29 @@ export default function Home() {
   const [newTitleIds, setNewTitleIds] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<Tab>("home");
   const [processing, setProcessing] = useState(false);
+
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  }, []);
+
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    if (touchStartX.current === null || touchStartY.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    const dy = e.changedTouches[0].clientY - touchStartY.current;
+    touchStartX.current = null;
+    touchStartY.current = null;
+    // 横方向が支配的かつ閾値超えのみ反応
+    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    setActiveTab((prev) => {
+      const idx = TABS.findIndex((t) => t.id === prev);
+      if (dx < 0) return TABS[Math.min(idx + 1, TABS.length - 1)].id;
+      return TABS[Math.max(idx - 1, 0)].id;
+    });
+  }, []);
 
   useEffect(() => {
     setHasSave(hasSaveData());
@@ -356,7 +379,11 @@ export default function Home() {
       </header>
 
       {/* ── Main content ── */}
-      <main className="max-w-2xl mx-auto px-4 py-4 space-y-4 pb-8">
+      <main
+        className="max-w-2xl mx-auto px-4 py-4 space-y-4 pb-8"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
 
         {/* ホーム */}
         {activeTab === "home" && (
