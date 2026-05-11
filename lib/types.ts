@@ -40,6 +40,7 @@ export interface ActionLog {
   id: string;
   text: string;
   category: ActionCategory;
+  minutes?: number;
   expGained: number;
   comment: string;
   timestamp: string;

@@ -144,6 +144,7 @@ export default function Home() {
               id: Date.now().toString(),
               text,
               category: result.category,
+              minutes: result.minutes,
               expGained: result.expGained,
               comment: result.comment,
               timestamp: new Date().toISOString(),
@@ -165,12 +166,21 @@ export default function Home() {
         }
         updated.level = newLevel;
 
+        const todayStr = new Date().toISOString().slice(0, 10);
+        const dailyMinutesByCategory = updated.logs
+          .filter((log) => log.timestamp.slice(0, 10) === todayStr)
+          .reduce<Record<string, number>>((acc, log) => {
+            acc[log.category] = (acc[log.category] ?? 0) + (log.minutes ?? 0);
+            return acc;
+          }, {});
+
         const newCompletedIds = [...status.completedQuestIds];
         let questBonus = 0;
         let questStones = 0;
         for (const qid of status.todayQuestIds) {
           if (newCompletedIds.includes(qid)) continue;
-          if (checkQuestCompletion(qid, result.category, result.minutes)) {
+          const accumulatedMinutes = dailyMinutesByCategory[result.category] ?? result.minutes;
+          if (checkQuestCompletion(qid, result.category, accumulatedMinutes)) {
             newCompletedIds.push(qid);
             const q = getQuestById(qid);
             if (q) {
