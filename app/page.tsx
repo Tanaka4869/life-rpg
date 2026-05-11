@@ -50,6 +50,7 @@ export default function Home() {
   const [showLevelUpModal, setShowLevelUpModal] = useState(false);
   const [showStatPopup, setShowStatPopup] = useState(false);
   const [tierUpTickets, setTierUpTickets] = useState(0);
+  const [levelUpStats, setLevelUpStats] = useState<{ key: string; newLevel: number }[]>([]);
 
   useEffect(() => {
     if (screen !== "game") return;
@@ -115,14 +116,15 @@ export default function Home() {
       setTimeout(() => {
         const result = parseAction(text);
         const prevLevel = calcLevel(status.exp).level;
-        const prevTiers = Object.fromEntries(
+        const prevStatLevels = Object.fromEntries(
           Object.entries(status.stats).map(([k, v]) => [k, Math.floor(v / 100)])
         );
 
         const newStats = applyStatDeltas(status.stats, result.statDeltas);
-        const tierUpCount = Object.entries(newStats).filter(
-          ([k, v]) => Math.floor(v / 100) > (prevTiers[k] ?? 0)
-        ).length;
+        const leveledUpStats = Object.entries(newStats)
+          .filter(([k, v]) => Math.floor(v / 100) > (prevStatLevels[k] ?? 0))
+          .map(([k, v]) => ({ key: k, newLevel: Math.floor(v / 100) + 1 }));
+        const tierUpCount = leveledUpStats.length;
 
         let updated: PlayerStatus = {
           ...status,
@@ -196,6 +198,7 @@ export default function Home() {
         setLastResult(result);
         setLastStatDeltas({ ...result.statDeltas });
         setTierUpTickets(tierUpCount);
+        setLevelUpStats(leveledUpStats);
         setShowStatPopup(true);
         setProcessing(false);
       }, 300);
@@ -374,6 +377,7 @@ export default function Home() {
         result={lastResult}
         statDeltas={lastStatDeltas}
         tierUpTickets={tierUpTickets}
+        levelUpStats={levelUpStats}
         onClose={() => setShowStatPopup(false)}
       />
       {/* ── Header ── */}

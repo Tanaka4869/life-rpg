@@ -28,15 +28,21 @@ const CATEGORY_LABEL: Record<string, string> = {
   UNKNOWN:  "ACTION",
 };
 
+interface LevelUpStat {
+  key: string;
+  newLevel: number;
+}
+
 interface Props {
   show: boolean;
   result: ActionResult | null;
   statDeltas: Partial<PlayerStats> | null;
   tierUpTickets?: number;
+  levelUpStats?: LevelUpStat[];
   onClose: () => void;
 }
 
-export default function StatUpPopup({ show, result, statDeltas, tierUpTickets = 0, onClose }: Props) {
+export default function StatUpPopup({ show, result, statDeltas, tierUpTickets = 0, levelUpStats = [], onClose }: Props) {
   const [visible, setVisible] = useState(false);
   const [animIn, setAnimIn] = useState(false);
 
@@ -125,12 +131,29 @@ export default function StatUpPopup({ show, result, statDeltas, tierUpTickets = 
           )}
         </div>
 
-        {tierUpTickets > 0 && (
-          <div className="mx-4 mb-3 px-3 py-2 rounded-lg border border-yellow-600 bg-yellow-950/60 flex items-center gap-2">
-            <span className="text-base leading-none">🎫</span>
-            <span className="text-xs font-mono text-yellow-300 font-bold">
-              TIER UP! ガチャチケット ×{tierUpTickets} 獲得
-            </span>
+        {levelUpStats.length > 0 && (
+          <div className="mx-4 mb-3 px-3 py-2 rounded-lg border border-yellow-500 bg-yellow-950/70 space-y-2">
+            <div className="flex items-center gap-2">
+              <span className="text-base leading-none">🎫</span>
+              <span className="text-xs font-mono text-yellow-300 font-bold tracking-wide">
+                STAT LEVEL UP! チケット ×{levelUpStats.length} 獲得
+              </span>
+            </div>
+            <div className="space-y-1 pl-1">
+              {levelUpStats.map(({ key, newLevel }) => {
+                const def = STAT_DEFINITIONS.find((d) => d.key === key);
+                if (!def) return null;
+                return (
+                  <div key={key} className="flex items-center gap-2">
+                    <span className="text-sm leading-none">{def.icon}</span>
+                    <span className="text-xs font-mono text-yellow-200 flex-1">{def.label}</span>
+                    <span className="text-xs font-black font-mono text-yellow-400 bg-yellow-900/60 px-1.5 py-0.5 rounded">
+                      Lv.{newLevel}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
         <div className="text-center pb-2">
