@@ -80,11 +80,31 @@ export const KEYWORD_STAT_EFFECTS: Array<{
     effects: { stamina: 5, health: 3 },
   },
   {
-    keywords: ["水を飲む", "水分補給", "水飲む"],
-    effects: { health: 3 },
+    keywords: ["水を飲む", "水を飲", "水分補給", "水飲む"],
+    effects: { health: 12 },
+  },
+  {
+    keywords: ["薬を飲む", "薬を飲", "服薬"],
+    effects: { health: 12 },
   },
   {
     keywords: ["肌ケア", "スキンケア", "保湿"],
-    effects: { health: 3 },
+    effects: { cleanliness: 12, health: 6 },
+  },
+  {
+    keywords: ["歯磨き", "歯ブラシ"],
+    effects: { cleanliness: 20, health: 6 },
+  },
+  {
+    keywords: ["日光浴び", "日光浴", "日光を浴"],
+    effects: { health: 12, stamina: 6 },
+  },
+  {
+    keywords: ["深呼吸", "腹式呼吸"],
+    effects: { concentration: 12, health: 6 },
+  },
+  {
+    keywords: ["ゴミ捨て"],
+    effects: { cleanliness: 12, housework: 12 },
   },
 ];

@@ -25,14 +25,6 @@ const ACTION_SHORTCUTS = [
   "筋トレ", "掃除", "料理",
 ];
 
-const SINGLE_ACTIONS: { label: string; text: string; icon: string }[] = [
-  { label: "睡眠 7h+",  text: "睡眠 7時間",  icon: "🛌" },
-  { label: "瞑想 3分",  text: "瞑想 3分",    icon: "🧘" },
-  { label: "水を飲む",  text: "水を飲む",     icon: "💧" },
-  { label: "肌ケア",    text: "肌ケア",       icon: "✨" },
-  { label: "ごみ捨て",  text: "ゴミ捨て 5分", icon: "🗑️" },
-];
-
 const DEFAULT_TIME = "30分";
 
 export default function ActionInput({ onSubmit, disabled }: Props) {
@@ -114,26 +106,6 @@ export default function ActionInput({ onSubmit, disabled }: Props) {
               }`}
             >
               {label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* シングルアクション */}
-      <div className="space-y-1.5">
-        <label className="text-xs font-mono text-slate-500 tracking-wider">
-          ▸ ワンタップ記録
-        </label>
-        <div className="flex flex-wrap gap-2">
-          {SINGLE_ACTIONS.map(({ label, text, icon }) => (
-            <button
-              key={text}
-              onClick={() => { onSubmit(text); }}
-              disabled={disabled}
-              className="flex items-center gap-1.5 px-3 py-2 rounded border border-indigo-700 text-indigo-300 bg-indigo-900/20 hover:bg-indigo-900/40 hover:border-indigo-500 font-mono text-sm transition-colors disabled:opacity-40"
-            >
-              <span>{icon}</span>
-              <span>{label}</span>
             </button>
           ))}
         </div>

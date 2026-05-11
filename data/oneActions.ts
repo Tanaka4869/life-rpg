@@ -10,6 +10,7 @@ export interface OneAction {
 }
 
 export const ONE_ACTIONS: OneAction[] = [
+  { label: "睡眠 7h+",   icon: "🛌", text: "睡眠 7時間" },
   { label: "水を飲む",   icon: "💧", text: "水を飲む 5分" },
   { label: "薬を飲む",   icon: "💊", text: "薬を飲む 5分" },
   { label: "肌ケア",    icon: "✨", text: "肌ケア 10分" },
