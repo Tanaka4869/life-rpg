@@ -59,7 +59,7 @@ life-rpg/
 │   └── globals.css       # グローバルスタイル（ダークRPGテーマ）
 ├── components/
 │   ├── StatusPanel.tsx   # ステータス表示パネル（LV/EXP/HP/Focus）
-│   ├── StatGrowthPanel.tsx # キャラクターステータス成長パネル（8種）
+│   ├── StatGrowthPanel.tsx # キャラクターステータス成長パネル（10種）
 │   ├── ActionInput.tsx   # 行動入力フォーム
 │   ├── CommentBox.tsx    # AIコメント・演出表示
 │   ├── QuestPanel.tsx    # デイリークエスト一覧
@@ -136,6 +136,8 @@ interface ActionLog {
 | `cooking` | 自炊力 | 料理 / 自炊 |
 | `muscular` | 筋力 | 筋トレ / 腕立て |
 | `execution` | 実行力 | WORK / あらゆる行動 |
+| `cleanliness` | 綺麗さ | 掃除 / 洗濯 / 整理整頓 |
+| `engineering` | エンジニア力 | プログラミング / 開発 |
 
 増加量は `data/actionStatMap.ts` で定義。入力時間（分）に比例してスケール。
 

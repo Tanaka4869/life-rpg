@@ -18,7 +18,9 @@ export type StatKey =
   | "housework"     // 家事力
   | "cooking"       // 自炊力
   | "muscular"      // 筋力
-  | "execution";    // 実行力
+  | "execution"     // 実行力
+  | "cleanliness"   // 綺麗さ
+  | "engineering";  // エンジニア力
 
 export type PlayerStats = Record<StatKey, number>;
 
