@@ -14,6 +14,7 @@ import GachaPanel from "@/components/GachaPanel";
 import BattlePanel from "@/components/BattlePanel";
 import InventoryPanel from "@/components/InventoryPanel";
 import LevelUpModal from "@/components/LevelUpModal";
+import StatUpPopup from "@/components/StatUpPopup";
 import { parseAction, calcLevel } from "@/lib/gameEngine";
 import { loadStatus, saveStatus, hasSaveData, resetAllData, initNewPlayer } from "@/lib/storage";
 import { applyStatDeltas } from "@/lib/statEngine";
@@ -47,6 +48,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>("home");
   const [processing, setProcessing] = useState(false);
   const [showLevelUpModal, setShowLevelUpModal] = useState(false);
+  const [showStatPopup, setShowStatPopup] = useState(false);
 
   useEffect(() => {
     setHasSave(hasSaveData());
@@ -148,6 +150,7 @@ export default function Home() {
         setStatus(updated);
         setLastResult(result);
         setLastStatDeltas({ ...result.statDeltas });
+        setShowStatPopup(true);
         setProcessing(false);
       }, 300);
     },
@@ -319,6 +322,12 @@ export default function Home() {
         show={showLevelUpModal}
         newLevel={status.level}
         onClose={() => setShowLevelUpModal(false)}
+      />
+      <StatUpPopup
+        show={showStatPopup}
+        result={lastResult}
+        statDeltas={lastStatDeltas}
+        onClose={() => setShowStatPopup(false)}
       />
       {/* ── Header ── */}
       <header className="border-b border-slate-800 bg-slate-950/95 backdrop-blur sticky top-0 z-10">
