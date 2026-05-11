@@ -300,17 +300,31 @@ export default function GachaPanel({ stones, tickets, onRoll }: Props) {
           </div>
         )}
 
-        {/* Probability table */}
+        {/* Probability table with item list */}
         <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-3">
-          <p className="text-slate-500 font-mono text-xs mb-2 tracking-wider">排出率</p>
-          <div className="space-y-1">
+          <p className="text-slate-500 font-mono text-xs mb-2 tracking-wider">排出率・アイテム一覧</p>
+          <div className="space-y-3">
             {(["ULTRA_RARE", "SUPER_RARE", "RARE", "UNCOMMON", "COMMON"] as GachaRarity[]).map((r) => {
               const s = RARITY_STYLES[r];
               const weights: Record<GachaRarity, number> = { COMMON: 60, UNCOMMON: 29, RARE: 8, SUPER_RARE: 2, ULTRA_RARE: 1 };
+              const items = GACHA_ITEMS.filter((i) => i.rarity === r);
               return (
-                <div key={r} className="flex justify-between text-xs font-mono">
-                  <span className={s.text}>{RARITY_LABELS[r]}</span>
-                  <span className="text-slate-400">{weights[r]}%</span>
+                <div key={r}>
+                  <div className="flex justify-between text-xs font-mono mb-1">
+                    <span className={`font-bold ${s.text}`}>{RARITY_LABELS[r]}</span>
+                    <span className="text-slate-400">{weights[r]}%</span>
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    {items.map((item) => (
+                      <span
+                        key={item.id}
+                        className={`text-xs px-1.5 py-0.5 rounded border ${s.border} ${s.bg} ${s.text} font-mono`}
+                        style={{ fontSize: "10px" }}
+                      >
+                        {item.icon} {item.name}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               );
             })}

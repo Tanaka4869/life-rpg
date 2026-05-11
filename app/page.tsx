@@ -14,6 +14,7 @@ import GachaPanel from "@/components/GachaPanel";
 import BattlePanel from "@/components/BattlePanel";
 import InventoryPanel from "@/components/InventoryPanel";
 import LevelUpModal from "@/components/LevelUpModal";
+import StatUpPopup from "@/components/StatUpPopup";
 import { parseAction, calcLevel } from "@/lib/gameEngine";
 import { loadStatus, saveStatus, hasSaveData, resetAllData, initNewPlayer } from "@/lib/storage";
 import { applyStatDeltas } from "@/lib/statEngine";
@@ -47,6 +48,41 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>("home");
   const [processing, setProcessing] = useState(false);
   const [showLevelUpModal, setShowLevelUpModal] = useState(false);
+  const [showStatPopup, setShowStatPopup] = useState(false);
+
+  useEffect(() => {
+    if (screen !== "game") return;
+    let startX: number | null = null;
+    let startY: number | null = null;
+
+    const onStart = (e: TouchEvent) => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    };
+    const onEnd = (e: TouchEvent) => {
+      if (startX === null || startY === null) return;
+      const dx = e.changedTouches[0].clientX - startX;
+      const dy = e.changedTouches[0].clientY - startY;
+      startX = null;
+      startY = null;
+      if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+      setActiveTab((prev) => {
+        const idx = TABS.findIndex((t) => t.id === prev);
+        if (dx < 0) return TABS[Math.min(idx + 1, TABS.length - 1)].id;
+        return TABS[Math.max(idx - 1, 0)].id;
+      });
+    };
+    const onCancel = () => { startX = null; startY = null; };
+
+    document.addEventListener("touchstart", onStart);
+    document.addEventListener("touchend", onEnd);
+    document.addEventListener("touchcancel", onCancel);
+    return () => {
+      document.removeEventListener("touchstart", onStart);
+      document.removeEventListener("touchend", onEnd);
+      document.removeEventListener("touchcancel", onCancel);
+    };
+  }, [screen, setActiveTab]);
 
   useEffect(() => {
     setHasSave(hasSaveData());
@@ -148,6 +184,7 @@ export default function Home() {
         setStatus(updated);
         setLastResult(result);
         setLastStatDeltas({ ...result.statDeltas });
+        setShowStatPopup(true);
         setProcessing(false);
       }, 300);
     },
@@ -319,6 +356,12 @@ export default function Home() {
         show={showLevelUpModal}
         newLevel={status.level}
         onClose={() => setShowLevelUpModal(false)}
+      />
+      <StatUpPopup
+        show={showStatPopup}
+        result={lastResult}
+        statDeltas={lastStatDeltas}
+        onClose={() => setShowStatPopup(false)}
       />
       {/* ── Header ── */}
       <header className="border-b border-slate-800 bg-slate-950/95 backdrop-blur sticky top-0 z-10">

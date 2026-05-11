@@ -16,9 +16,11 @@ export const GACHA_ITEMS: GachaItem[] = [
   { id: "u004", name: "映画券", rarity: "UNCOMMON", icon: "🎬" },
   { id: "u005", name: "ゲーム券", rarity: "UNCOMMON", icon: "🎮" },
   { id: "u006", name: "銭湯券", rarity: "UNCOMMON", icon: "♨️" },
+  { id: "u007", name: "Amazon1000円券", rarity: "UNCOMMON", icon: "📦" },
   // RARE (8%)
   { id: "r001", name: "服券", rarity: "RARE", icon: "👕" },
   { id: "r002", name: "パチンコ3000円券", rarity: "RARE", icon: "🎰" },
+  { id: "r003", name: "Amazon3000円券", rarity: "RARE", icon: "🛍️" },
   // SUPER_RARE (2%)
   { id: "sr001", name: "パチンコ5000円券", rarity: "SUPER_RARE", icon: "💎" },
   // ULTRA_RARE (1%)
