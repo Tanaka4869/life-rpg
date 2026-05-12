@@ -87,7 +87,7 @@ export const RARITY_STYLES: Record<GachaRarity, {
   },
 };
 
-export const GACHA_COST_STONE = 30;
-export const GACHA_10_COST_STONE = 270;
+export const GACHA_COST_STONE = 100;
+export const GACHA_10_COST_STONE = 900;
 export const GACHA_COST_TICKET = 1;
 export const GACHA_10_COST_TICKET = 10;
