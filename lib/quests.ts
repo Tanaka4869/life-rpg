@@ -26,19 +26,17 @@ const QUEST_POOL: Omit<Quest, "completed">[] = [
   { id: "q_meditate_20", title: "心を鎮める",       description: "瞑想・休憩を20分行う",  category: "MEDITATE",  targetMinutes: 20,  reward: 25  },
   { id: "q_meditate_30", title: "禅の境地",         description: "瞑想を30分行う",        category: "MEDITATE",  targetMinutes: 30,  reward: 35  },
 
-  // SLEEP
+  // SLEEP（7時間超えは現実的でないため上限7時間）
   { id: "q_sleep_360", title: "戦士の休息",         description: "6時間以上睡眠する",     category: "SLEEP",     targetMinutes: 360, reward: 30  },
   { id: "q_sleep_420", title: "勇者の眠り",         description: "7時間以上睡眠する",     category: "SLEEP",     targetMinutes: 420, reward: 40  },
-  { id: "q_sleep_480", title: "深い眠り",           description: "8時間以上睡眠する",     category: "SLEEP",     targetMinutes: 480, reward: 55  },
 
   // HOUSEWORK
   { id: "q_housework_10", title: "家を整える",      description: "掃除を10分行う",        category: "HOUSEWORK", targetMinutes: 10,  reward: 20  },
   { id: "q_housework_20", title: "きれいな部屋",    description: "掃除を20分行う",        category: "HOUSEWORK", targetMinutes: 20,  reward: 35  },
   { id: "q_housework_30", title: "大掃除",          description: "掃除を30分行う",        category: "HOUSEWORK", targetMinutes: 30,  reward: 50  },
 
-  // COOKING
-  { id: "q_cooking_15", title: "自炊する",          description: "料理を15分行う",        category: "COOKING",   targetMinutes: 15,  reward: 20  },
-  { id: "q_cooking_30", title: "丁寧な食事作り",    description: "料理を30分行う",        category: "COOKING",   targetMinutes: 30,  reward: 35  },
+  // COOKING（1日1食分を想定）
+  { id: "q_cooking_30", title: "今日の自炊",        description: "料理を1回する",         category: "COOKING",   targetMinutes: 30,  reward: 35  },
 
   // ONCE（クイックアクション）
   { id: "q_once_water",    title: "水分補給",       description: "水を飲む",           questType: "once" as const, matchText: "水を飲む",   category: "UNKNOWN" as const, targetMinutes: 0, reward: 10 },
