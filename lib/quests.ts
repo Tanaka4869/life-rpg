@@ -21,10 +21,8 @@ const QUEST_POOL: Omit<Quest, "completed">[] = [
   { id: "q_study_90",  title: "探求者",             description: "学習を1時間半行う",     category: "STUDY",     targetMinutes: 90,  reward: 110 },
   { id: "q_study_120", title: "知識の塔",           description: "学習を2時間行う",       category: "STUDY",     targetMinutes: 120, reward: 140 },
 
-  // MEDITATE
-  { id: "q_meditate_10", title: "静寂の時",         description: "瞑想・休憩を10分行う",  category: "MEDITATE",  targetMinutes: 10,  reward: 15  },
-  { id: "q_meditate_20", title: "心を鎮める",       description: "瞑想・休憩を20分行う",  category: "MEDITATE",  targetMinutes: 20,  reward: 25  },
-  { id: "q_meditate_30", title: "禅の境地",         description: "瞑想を30分行う",        category: "MEDITATE",  targetMinutes: 30,  reward: 35  },
+  // MEDITATE（実施したかどうかだけを判定）
+  { id: "q_meditate_once", title: "瞑想する",       description: "瞑想を1回行う",         category: "MEDITATE",  targetMinutes: 1,   reward: 20  },
 
   // SLEEP（7時間超えは現実的でないため上限7時間）
   { id: "q_sleep_360", title: "戦士の休息",         description: "6時間以上睡眠する",     category: "SLEEP",     targetMinutes: 360, reward: 30  },
@@ -48,14 +46,25 @@ const QUEST_POOL: Omit<Quest, "completed">[] = [
   { id: "q_once_skincare", title: "スキンケア",     description: "肌ケアをする",       questType: "once" as const, matchText: "肌ケア",     category: "UNKNOWN" as const, targetMinutes: 0, reward: 10 },
 ];
 
+// 1日に最大1回しか出さないカテゴリ
+const SINGLETON_CATEGORIES = new Set(["SLEEP", "MEDITATE"]);
+
 export function generateDailyQuests(refreshCount = 0, excludeIds: string[] = []): Quest[] {
   const today = new Date().toISOString().slice(0, 10);
   const baseSeed = today.replace(/-/g, "").split("").reduce((a, c) => a + c.charCodeAt(0), 0);
   const seed = baseSeed + refreshCount * 1337;
 
-  const available = excludeIds.length > 0
-    ? QUEST_POOL.filter((q) => !excludeIds.includes(q.id))
-    : QUEST_POOL;
+  // 既出のシングルトンカテゴリを特定
+  const shownSingletonCats = new Set<string>();
+  for (const q of QUEST_POOL) {
+    if (excludeIds.includes(q.id) && SINGLETON_CATEGORIES.has(q.category as string)) {
+      shownSingletonCats.add(q.category as string);
+    }
+  }
+
+  const available = QUEST_POOL.filter(
+    (q) => !excludeIds.includes(q.id) && !shownSingletonCats.has(q.category as string)
+  );
 
   // カテゴリ別にグループ化
   const byCategory = new Map<string, Omit<Quest, "completed">[]>();
