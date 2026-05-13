@@ -1,6 +1,6 @@
 # LIFE RPG — アプリケーション仕様書
 
-**バージョン**: 1.9.4  
+**バージョン**: 2.0.1  
 **作成日**: 2026-05-07  
 **更新日**: 2026-05-13  
 **対象環境**: PCブラウザ / Androidブラウザ（PWA対応）
@@ -105,6 +105,7 @@ interface PlayerStatus {
   activeTitle: string;    // 装備中称号ID
   completedQuestIds: string[]; // 当日完了クエストIDリスト
   todayQuestIds: string[];     // 当日のクエストIDリスト
+  questRefreshCount: number;   // 当日のクエストリフレッシュ回数（日付変更時リセット）
   logs: ActionLog[];           // 行動ログ履歴
 }
 ```
@@ -300,22 +301,39 @@ MaxHP = 100 + floor(STR / 5) × 10
 ### 6.1 デイリークエスト生成
 
 - 毎日、クエストプールから **3つ** をランダム選択
-- ランダムシードは **日付ベース**（同じ日は同じクエストが出る）
+- ランダムシードは **日付 + リフレッシュ回数** ベース（全達成後に別セットを生成可能）
+- 全クエスト達成後、「新しいミッションを受ける」ボタンが表示され、何度でも新セットに更新できる
+- リフレッシュ回数（`questRefreshCount`）は日付変更時に 0 にリセット
 
-### 6.2 クエストプール（全10種）
+### 6.2 クエストプール（全25種）
 
 | ID | タイトル | カテゴリ | 目標時間 | 報酬 |
 |----|---------|---------|---------|------|
-| q_work_30 | 副業の一歩 | WORK | 30分 | 30 EXP |
-| q_work_60 | 副業戦士 | WORK | 60分 | 60 EXP |
+| q_work_30 | 仕事に取り組む | WORK | 30分 | 30 EXP |
+| q_work_60 | 仕事の時間 | WORK | 60分 | 60 EXP |
+| q_work_90 | 集中の90分 | WORK | 90分 | 90 EXP |
+| q_work_120 | 長丁場の作業 | WORK | 120分 | 120 EXP |
+| q_exercise_15 | 軽く体を動かす | EXERCISE | 15分 | 15 EXP |
 | q_exercise_30 | 体を動かせ | EXERCISE | 30分 | 25 EXP |
 | q_exercise_60 | 肉体鍛錬 | EXERCISE | 60分 | 50 EXP |
+| q_exercise_90 | ガチ勢の汗 | EXERCISE | 90分 | 75 EXP |
+| q_walk_20 | 散歩タイム | EXERCISE | 20分 | 18 EXP |
 | q_study_15 | 知の扉 | STUDY | 15分 | 20 EXP |
 | q_study_30 | 学習者 | STUDY | 30分 | 40 EXP |
 | q_study_60 | 修行の時間 | STUDY | 60分 | 80 EXP |
+| q_study_90 | 探求者 | STUDY | 90分 | 110 EXP |
+| q_study_120 | 知識の塔 | STUDY | 120分 | 140 EXP |
 | q_meditate_10 | 静寂の時 | MEDITATE | 10分 | 15 EXP |
+| q_meditate_20 | 心を鎮める | MEDITATE | 20分 | 25 EXP |
+| q_meditate_30 | 禅の境地 | MEDITATE | 30分 | 35 EXP |
+| q_sleep_360 | 戦士の休息 | SLEEP | 360分 | 30 EXP |
 | q_sleep_420 | 勇者の眠り | SLEEP | 420分 | 40 EXP |
-| q_walk_30 | 散歩の習慣 | EXERCISE | 30分 | 25 EXP |
+| q_sleep_480 | 深い眠り | SLEEP | 480分 | 55 EXP |
+| q_housework_10 | 家を整える | HOUSEWORK | 10分 | 20 EXP |
+| q_housework_20 | きれいな部屋 | HOUSEWORK | 20分 | 35 EXP |
+| q_housework_30 | 大掃除 | HOUSEWORK | 30分 | 50 EXP |
+| q_cooking_15 | 自炊する | COOKING | 15分 | 20 EXP |
+| q_cooking_30 | 丁寧な食事作り | COOKING | 30分 | 35 EXP |
 
 ### 6.3 クエスト達成判定
 

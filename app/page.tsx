@@ -18,7 +18,7 @@ import StatUpPopup from "@/components/StatUpPopup";
 import { parseAction, calcLevel } from "@/lib/gameEngine";
 import { loadStatus, saveStatus, hasSaveData, resetAllData, initNewPlayer } from "@/lib/storage";
 import { applyStatDeltas } from "@/lib/statEngine";
-import { checkQuestCompletion, getQuestById } from "@/lib/quests";
+import { checkQuestCompletion, getQuestById, generateDailyQuests } from "@/lib/quests";
 import { checkNewTitles, getTitleById } from "@/data/titles";
 import type { PlayerStatus, ActionResult, PlayerStats, GachaRecord } from "@/lib/types";
 
@@ -215,6 +215,20 @@ export default function Home() {
     },
     [status]
   );
+
+  const handleQuestRefresh = useCallback(() => {
+    if (!status) return;
+    const newRefreshCount = (status.questRefreshCount ?? 0) + 1;
+    const newQuests = generateDailyQuests(newRefreshCount);
+    const updated: PlayerStatus = {
+      ...status,
+      todayQuestIds: newQuests.map((q) => q.id),
+      completedQuestIds: [],
+      questRefreshCount: newRefreshCount,
+    };
+    saveStatus(updated);
+    setStatus(updated);
+  }, [status]);
 
   const handleSelectTitle = useCallback(
     (titleId: string) => {
@@ -492,6 +506,7 @@ export default function Home() {
             <QuestPanel
               questIds={status.todayQuestIds}
               completedIds={status.completedQuestIds}
+              onRefresh={handleQuestRefresh}
             />
             <OneActionPanel onSubmit={handleAction} disabled={processing} />
           </>
