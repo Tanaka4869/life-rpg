@@ -219,7 +219,7 @@ export default function Home() {
   const handleQuestRefresh = useCallback(() => {
     if (!status) return;
     const newRefreshCount = (status.questRefreshCount ?? 0) + 1;
-    const newQuests = generateDailyQuests(newRefreshCount);
+    const newQuests = generateDailyQuests(newRefreshCount, status.todayQuestIds);
     const updated: PlayerStatus = {
       ...status,
       todayQuestIds: newQuests.map((q) => q.id),

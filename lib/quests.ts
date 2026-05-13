@@ -41,12 +41,16 @@ const QUEST_POOL: Omit<Quest, "completed">[] = [
   { id: "q_cooking_30", title: "丁寧な食事作り",    description: "料理を30分行う",        category: "COOKING",   targetMinutes: 30,  reward: 35  },
 ];
 
-export function generateDailyQuests(refreshCount = 0): Quest[] {
+export function generateDailyQuests(refreshCount = 0, excludeIds: string[] = []): Quest[] {
   const today = new Date().toISOString().slice(0, 10);
   const baseSeed = today.replace(/-/g, "").split("").reduce((a, c) => a + c.charCodeAt(0), 0);
   const seed = baseSeed + refreshCount * 1337;
 
-  const shuffled = [...QUEST_POOL].sort((a, b) => {
+  const pool = excludeIds.length > 0
+    ? QUEST_POOL.filter((q) => !excludeIds.includes(q.id))
+    : QUEST_POOL;
+
+  const shuffled = [...pool].sort((a, b) => {
     const ha = hashStr(a.id + seed);
     const hb = hashStr(b.id + seed);
     return ha - hb;
