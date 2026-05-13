@@ -54,6 +54,8 @@ export interface Quest {
   targetMinutes: number;
   reward: number;
   completed: boolean;
+  questType?: "time" | "once";  // "once" = 1回やれば達成、デフォルトは "time"
+  matchText?: string;            // "once" 型: このテキストが入力に含まれたら達成
 }
 
 export interface Title {
@@ -120,4 +122,5 @@ export interface PlayerStatus {
   bossMaxHp: number;
   lastBossDate: string;
   bossDefeats: number;
+  shownQuestIds?: string[];  // 当日に表示した全クエストID（リフレッシュをまたいで累積）
 }

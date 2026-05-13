@@ -39,6 +39,15 @@ const QUEST_POOL: Omit<Quest, "completed">[] = [
   // COOKING
   { id: "q_cooking_15", title: "自炊する",          description: "料理を15分行う",        category: "COOKING",   targetMinutes: 15,  reward: 20  },
   { id: "q_cooking_30", title: "丁寧な食事作り",    description: "料理を30分行う",        category: "COOKING",   targetMinutes: 30,  reward: 35  },
+
+  // ONCE（クイックアクション）
+  { id: "q_once_water",    title: "水分補給",       description: "水を飲む",           questType: "once" as const, matchText: "水を飲む",   category: "UNKNOWN" as const, targetMinutes: 0, reward: 10 },
+  { id: "q_once_teeth",    title: "歯を磨く",       description: "歯磨きをする",       questType: "once" as const, matchText: "歯磨き",     category: "UNKNOWN" as const, targetMinutes: 0, reward: 10 },
+  { id: "q_once_sunlight", title: "日光浴",         description: "日光を浴びる",       questType: "once" as const, matchText: "日光",       category: "UNKNOWN" as const, targetMinutes: 0, reward: 10 },
+  { id: "q_once_breath",   title: "深呼吸する",     description: "深呼吸をする",       questType: "once" as const, matchText: "深呼吸",     category: "MEDITATE" as const, targetMinutes: 0, reward: 10 },
+  { id: "q_once_stretch",  title: "ストレッチする", description: "ストレッチをする",   questType: "once" as const, matchText: "ストレッチ", category: "EXERCISE" as const, targetMinutes: 0, reward: 12 },
+  { id: "q_once_trash",    title: "ゴミ捨て",       description: "ゴミを捨てる",       questType: "once" as const, matchText: "ゴミ捨て",   category: "HOUSEWORK" as const, targetMinutes: 0, reward: 12 },
+  { id: "q_once_skincare", title: "スキンケア",     description: "肌ケアをする",       questType: "once" as const, matchText: "肌ケア",     category: "UNKNOWN" as const, targetMinutes: 0, reward: 10 },
 ];
 
 export function generateDailyQuests(refreshCount = 0, excludeIds: string[] = []): Quest[] {
@@ -46,17 +55,29 @@ export function generateDailyQuests(refreshCount = 0, excludeIds: string[] = [])
   const baseSeed = today.replace(/-/g, "").split("").reduce((a, c) => a + c.charCodeAt(0), 0);
   const seed = baseSeed + refreshCount * 1337;
 
-  const pool = excludeIds.length > 0
+  const available = excludeIds.length > 0
     ? QUEST_POOL.filter((q) => !excludeIds.includes(q.id))
     : QUEST_POOL;
 
-  const shuffled = [...pool].sort((a, b) => {
-    const ha = hashStr(a.id + seed);
-    const hb = hashStr(b.id + seed);
-    return ha - hb;
-  });
+  // カテゴリ別にグループ化
+  const byCategory = new Map<string, Omit<Quest, "completed">[]>();
+  for (const q of available) {
+    const cat = q.questType === "once" ? "__once__" : q.category;
+    if (!byCategory.has(cat)) byCategory.set(cat, []);
+    byCategory.get(cat)!.push(q);
+  }
 
-  return shuffled.slice(0, 3).map((q) => ({ ...q, completed: false }));
+  // カテゴリをシャッフルして3つ選ぶ
+  const cats = [...byCategory.keys()].sort((a, b) => hashStr(a + seed) - hashStr(b + seed));
+  const selected: Quest[] = [];
+  for (const cat of cats) {
+    if (selected.length >= 3) break;
+    const pool = byCategory.get(cat)!;
+    const sorted = [...pool].sort((a, b) => hashStr(a.id + seed) - hashStr(b.id + seed));
+    selected.push({ ...sorted[0], completed: false });
+  }
+
+  return selected;
 }
 
 export function getQuestById(id: string): Quest | undefined {
@@ -67,10 +88,14 @@ export function getQuestById(id: string): Quest | undefined {
 export function checkQuestCompletion(
   questId: string,
   category: ActionCategory,
-  minutes: number
+  minutes: number,
+  text?: string,
 ): boolean {
   const quest = getQuestById(questId);
   if (!quest) return false;
+  if (quest.questType === "once") {
+    return !!quest.matchText && !!text && text.includes(quest.matchText);
+  }
   return quest.category === category && minutes >= quest.targetMinutes;
 }
 

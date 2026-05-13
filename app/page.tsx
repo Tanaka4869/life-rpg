@@ -181,7 +181,7 @@ export default function Home() {
         for (const qid of status.todayQuestIds) {
           if (newCompletedIds.includes(qid)) continue;
           const accumulatedMinutes = dailyMinutesByCategory[result.category] ?? result.minutes;
-          if (checkQuestCompletion(qid, result.category, accumulatedMinutes)) {
+          if (checkQuestCompletion(qid, result.category, accumulatedMinutes, text)) {
             newCompletedIds.push(qid);
             const q = getQuestById(qid);
             if (q) {
@@ -220,12 +220,14 @@ export default function Home() {
   const handleQuestRefresh = useCallback(() => {
     if (!status) return;
     const newRefreshCount = (status.questRefreshCount ?? 0) + 1;
-    const newQuests = generateDailyQuests(newRefreshCount, status.todayQuestIds);
+    const alreadySeen = [...(status.shownQuestIds ?? []), ...status.todayQuestIds];
+    const newQuests = generateDailyQuests(newRefreshCount, alreadySeen);
     const updated: PlayerStatus = {
       ...status,
       todayQuestIds: newQuests.map((q) => q.id),
       completedQuestIds: [],
       questRefreshCount: newRefreshCount,
+      shownQuestIds: alreadySeen,
     };
     saveStatus(updated);
     setStatus(updated);
