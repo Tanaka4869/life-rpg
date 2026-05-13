@@ -22,8 +22,15 @@ const TIME_OPTIONS: { label: string; value: string }[] = [
 
 const ACTION_SHORTCUTS = [
   "仕事", "学習", "個人開発",
-  "読書", "筋トレ", "散歩",
-  "掃除", "料理", "瞑想",
+  "読書", "散歩", "瞑想",
+  "掃除", "料理",
+];
+
+const QUICK_ACTIONS = [
+  "腕立て", "スクワット", "腹筋",
+  "水を飲む", "睡眠", "薬を飲む",
+  "肌ケア", "ストレッチ", "ごみ捨て",
+  "深呼吸", "歯磨き", "日光を浴びる",
 ];
 
 const DEFAULT_TIME = "30分";
@@ -107,6 +114,25 @@ export default function ActionInput({ onSubmit, disabled }: Props) {
               }`}
             >
               {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* クイック記録 */}
+      <div className="space-y-1.5">
+        <label className="text-xs font-mono text-slate-500 tracking-wider">
+          ▸ クイック記録（時間なし即記録）
+        </label>
+        <div className="grid grid-cols-3 gap-2">
+          {QUICK_ACTIONS.map((a) => (
+            <button
+              key={a}
+              onClick={() => { onSubmit(a); }}
+              disabled={disabled}
+              className="py-2.5 rounded border font-mono text-sm transition-colors border-orange-800 text-orange-400 hover:border-orange-500 hover:bg-orange-900/20 disabled:opacity-40"
+            >
+              {a}
             </button>
           ))}
         </div>
