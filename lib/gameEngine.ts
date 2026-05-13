@@ -152,7 +152,7 @@ function calcLegacyDeltas(
   const factor = minutes / 60;
   switch (category) {
     case "WORK":
-      return { hpDelta: 0, focusDelta: Math.round(4 * factor), strengthDelta: Math.round(3 * factor), intelligenceDelta: Math.round(5 * factor) };
+      return { hpDelta: 0, focusDelta: Math.round(8 * factor), strengthDelta: Math.round(6 * factor), intelligenceDelta: Math.round(10 * factor) };
     case "EXERCISE":
       return { hpDelta: Math.round(5 * factor), focusDelta: Math.round(2 * factor), strengthDelta: Math.round(5 * factor), intelligenceDelta: 0 };
     case "STUDY":
