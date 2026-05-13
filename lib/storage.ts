@@ -19,6 +19,7 @@ const DEFAULT_STATUS: PlayerStatus = {
   activeTitle: "",
   completedQuestIds: [],
   todayQuestIds: [],
+  questRefreshCount: 0,
   logs: [],
   stats: { ...DEFAULT_PLAYER_STATS },
   gachaStones: 30,
@@ -41,6 +42,7 @@ function migrateSaveData(status: PlayerStatus): PlayerStatus {
   if (status.bossMaxHp === undefined) status.bossMaxHp = 0;
   if (!status.lastBossDate) status.lastBossDate = "";
   if (status.bossDefeats === undefined) status.bossDefeats = 0;
+  if (status.questRefreshCount === undefined) status.questRefreshCount = 0;
   return status;
 }
 
@@ -96,6 +98,7 @@ function checkDailyReset(status: PlayerStatus): PlayerStatus {
     streak: newStreak,
     completedQuestIds: [],
     todayQuestIds: quests.map((q) => q.id),
+    questRefreshCount: 0,
     hp: Math.min(status.maxHp, status.hp + 20),
     // デイリーログインボーナス石
     gachaStones: status.gachaStones + 10,
