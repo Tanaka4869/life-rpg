@@ -39,6 +39,7 @@ export default function Home() {
   const [screen, setScreen] = useState<Screen>("title");
   const [hasSave, setHasSave] = useState(false);
   const [pushPulse, setPushPulse] = useState(true);
+  const [confirmNewGame, setConfirmNewGame] = useState(false);
 
   const [status, setStatus] = useState<PlayerStatus | null>(null);
   const [lastResult, setLastResult] = useState<ActionResult | null>(null);
@@ -360,17 +361,39 @@ export default function Home() {
                 </span>
               )}
             </button>
-            <button
-              onClick={handleNewGame}
-              className="w-full py-4 font-mono font-bold text-lg tracking-widest border-2 border-red-700 text-red-400 hover:bg-red-700/10 hover:shadow-[0_0_16px_rgba(239,68,68,0.3)] transition-all duration-200 rounded-sm"
-            >
-              はじめから
-              {hasSave && (
-                <span className="block text-xs text-red-700 font-normal tracking-normal mt-1">
-                  ※ セーブデータは削除されます
-                </span>
-              )}
-            </button>
+            {confirmNewGame ? (
+              <div className="w-full border-2 border-red-700 rounded-sm p-4 space-y-3 bg-red-950/20">
+                <p className="font-mono text-sm text-red-300 text-center tracking-wide">
+                  セーブデータを削除して最初からはじめますか？
+                </p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleNewGame}
+                    className="flex-1 py-3 font-mono font-bold tracking-widest border-2 border-red-600 text-red-400 hover:bg-red-700/20 transition-all duration-200 rounded-sm"
+                  >
+                    はい
+                  </button>
+                  <button
+                    onClick={() => setConfirmNewGame(false)}
+                    className="flex-1 py-3 font-mono font-bold tracking-widest border-2 border-slate-600 text-slate-400 hover:bg-slate-700/20 transition-all duration-200 rounded-sm"
+                  >
+                    やめる
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={() => setConfirmNewGame(true)}
+                className="w-full py-4 font-mono font-bold text-lg tracking-widest border-2 border-red-700 text-red-400 hover:bg-red-700/10 hover:shadow-[0_0_16px_rgba(239,68,68,0.3)] transition-all duration-200 rounded-sm"
+              >
+                はじめから
+                {hasSave && (
+                  <span className="block text-xs text-red-700 font-normal tracking-normal mt-1">
+                    ※ セーブデータは削除されます
+                  </span>
+                )}
+              </button>
+            )}
           </div>
         </div>
       </div>
