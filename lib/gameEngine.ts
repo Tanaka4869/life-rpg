@@ -134,7 +134,7 @@ function detectCategory(text: string): ActionCategory {
 // ----- EXP and stat calculation -----
 // 基準: 仕事 1時間 = 学習/個人開発/読書 30分 = 筋トレ/掃除/料理 10分 = 瞑想 3分
 const EXP_PER_HOUR: Record<ActionCategory, number> = {
-  WORK: 50,
+  WORK: 150,
   STUDY: 100,
   EXERCISE: 300,
   MEDITATE: 1000,
@@ -152,7 +152,7 @@ function calcLegacyDeltas(
   const factor = minutes / 60;
   switch (category) {
     case "WORK":
-      return { hpDelta: 0, focusDelta: Math.round(2 * factor), strengthDelta: Math.round(2 * factor), intelligenceDelta: Math.round(3 * factor) };
+      return { hpDelta: 0, focusDelta: Math.round(4 * factor), strengthDelta: Math.round(3 * factor), intelligenceDelta: Math.round(5 * factor) };
     case "EXERCISE":
       return { hpDelta: Math.round(5 * factor), focusDelta: Math.round(2 * factor), strengthDelta: Math.round(5 * factor), intelligenceDelta: 0 };
     case "STUDY":
