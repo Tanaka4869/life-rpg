@@ -106,6 +106,7 @@ export interface PlayerStatus {
   activeTitle: string;
   completedQuestIds: string[];
   todayQuestIds: string[];
+  questRefreshCount: number;
   logs: ActionLog[];
   stats: PlayerStats;
   // ガチャ通貨

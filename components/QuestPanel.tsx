@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 interface Props {
   questIds: string[];
   completedIds: string[];
+  onRefresh?: () => void;
 }
 
 const CATEGORY_ICONS: Record<string, string> = {
@@ -15,15 +16,19 @@ const CATEGORY_ICONS: Record<string, string> = {
   STUDY: "📖",
   MEDITATE: "🧘",
   SLEEP: "😴",
+  HOUSEWORK: "🧹",
+  COOKING: "🍳",
   DEBUFF: "⚠️",
   UNKNOWN: "❓",
 };
 
-export default function QuestPanel({ questIds, completedIds }: Props) {
+export default function QuestPanel({ questIds, completedIds, onRefresh }: Props) {
   const quests: Quest[] = questIds
     .map((id) => getQuestById(id))
     .filter(Boolean)
     .map((q) => ({ ...q!, completed: completedIds.includes(q!.id) }));
+
+  const allCompleted = quests.length > 0 && quests.every((q) => q.completed);
 
   return (
     <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3">
@@ -76,6 +81,20 @@ export default function QuestPanel({ questIds, completedIds }: Props) {
           </div>
         ))}
       </div>
+
+      {allCompleted && onRefresh && (
+        <div className="pt-1">
+          <div className="text-center text-xs font-mono text-green-400 mb-2 tracking-widest">
+            ── ALL QUESTS CLEARED ──
+          </div>
+          <button
+            onClick={onRefresh}
+            className="w-full py-2 font-mono text-sm font-bold tracking-widest border border-cyan-700 text-cyan-400 hover:bg-cyan-700/10 hover:shadow-[0_0_12px_rgba(34,211,238,0.2)] transition-all rounded-lg"
+          >
+            ⚡ 新しいミッションを受ける
+          </button>
+        </div>
+      )}
     </div>
   );
 }
