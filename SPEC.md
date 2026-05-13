@@ -1,6 +1,6 @@
 # LIFE RPG — アプリケーション仕様書
 
-**バージョン**: 2.3.1  
+**バージョン**: 2.3.2  
 **作成日**: 2026-05-07  
 **更新日**: 2026-05-13  
 **対象環境**: PCブラウザ / Androidブラウザ（PWA対応）
@@ -305,7 +305,7 @@ MaxHP = 100 + floor(STR / 5) × 10
 - 全クエスト達成後、「新しいミッションを受ける」ボタンが表示され、何度でも新セットに更新できる
 - リフレッシュ回数（`questRefreshCount`）は日付変更時に 0 にリセット
 
-### 6.2 クエストプール（全25種）
+### 6.2 クエストプール（全23種）
 
 | ID | タイトル | カテゴリ | 目標時間 | 報酬 |
 |----|---------|---------|---------|------|
@@ -328,12 +328,10 @@ MaxHP = 100 + floor(STR / 5) × 10
 | q_meditate_30 | 禅の境地 | MEDITATE | 30分 | 35 EXP |
 | q_sleep_360 | 戦士の休息 | SLEEP | 360分 | 30 EXP |
 | q_sleep_420 | 勇者の眠り | SLEEP | 420分 | 40 EXP |
-| q_sleep_480 | 深い眠り | SLEEP | 480分 | 55 EXP |
 | q_housework_10 | 家を整える | HOUSEWORK | 10分 | 20 EXP |
 | q_housework_20 | きれいな部屋 | HOUSEWORK | 20分 | 35 EXP |
 | q_housework_30 | 大掃除 | HOUSEWORK | 30分 | 50 EXP |
-| q_cooking_15 | 自炊する | COOKING | 15分 | 20 EXP |
-| q_cooking_30 | 丁寧な食事作り | COOKING | 30分 | 35 EXP |
+| q_cooking_30 | 今日の自炊 | COOKING | 30分 | 35 EXP |
 
 ### 6.3 クエスト達成判定
 
