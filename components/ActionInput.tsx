@@ -21,8 +21,8 @@ const TIME_OPTIONS: { label: string; value: string }[] = [
 ];
 
 const ACTION_SHORTCUTS = [
-  "仕事", "学習", "個人開発", "読書",
-  "筋トレ", "散歩", "掃除", "料理",
+  "仕事", "学習", "個人開発", "読書", "筋トレ",
+  "散歩", "掃除", "料理", "瞑想", "睡眠",
 ];
 
 const DEFAULT_TIME = "30分";
@@ -72,7 +72,7 @@ export default function ActionInput({ onSubmit, disabled }: Props) {
           disabled={disabled}
         />
         {/* ショートカット */}
-        <div className="grid grid-cols-4 gap-2 pt-0.5">
+        <div className="grid grid-cols-5 gap-2 pt-0.5">
           {ACTION_SHORTCUTS.map((s) => (
             <button
               key={s}
