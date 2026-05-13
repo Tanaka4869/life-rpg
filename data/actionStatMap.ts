@@ -7,7 +7,7 @@ export type StatEffect = Partial<Record<StatKey, number>>;
  * 新カテゴリを追加するときはここに1エントリ追加する。
  */
 export const CATEGORY_STAT_EFFECTS: Record<ActionCategory, StatEffect> = {
-  WORK:     { concentration: 4, execution: 8, intelligence: 3 },
+  WORK:     { concentration: 8, execution: 16, intelligence: 6 },
   EXERCISE: { stamina: 3, muscular: 2, health: 2 },
   STUDY:    { intelligence: 4, concentration: 2 },
   MEDITATE: { concentration: 5, health: 1 },
@@ -57,11 +57,11 @@ export const KEYWORD_STAT_EFFECTS: Array<{
   },
   {
     keywords: ["プログラミング", "コーディング", "開発", "コード"],
-    effects: { intelligence: 6, concentration: 5, execution: 5, engineering: 12 },
+    effects: { intelligence: 12, concentration: 10, execution: 10, engineering: 24 },
   },
   {
     keywords: ["副業", "ライティング", "ブログ", "執筆"],
-    effects: { execution: 10, intelligence: 5 },
+    effects: { execution: 20, intelligence: 10 },
   },
   {
     keywords: ["掃除", "片付け", "整理整頓", "大掃除", "拭き掃除"],
