@@ -22,7 +22,7 @@ const TIME_OPTIONS: { label: string; value: string }[] = [
 
 const ACTION_SHORTCUTS = [
   "仕事", "学習", "個人開発",
-  "読書", "散歩", "瞑想",
+  "読書", "散歩",
   "掃除", "料理",
 ];
 
