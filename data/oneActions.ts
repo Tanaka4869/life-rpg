@@ -19,6 +19,7 @@ export const ONE_ACTIONS: OneAction[] = [
   { label: "肌ケア",    icon: "✨", text: "肌ケア 10分" },
   { label: "ストレッチ", icon: "🤸", text: "ストレッチ 10分" },
   { label: "ゴミ捨て",  icon: "🗑️", text: "ゴミ捨て 5分" },
+  { label: "瞑想",      icon: "🧘", text: "瞑想 3分" },
   { label: "深呼吸",    icon: "🌬️", text: "深呼吸 5分" },
   { label: "歯磨き",    icon: "🦷", text: "歯磨き 3分" },
   { label: "日光を浴びる", icon: "☀️", text: "日光浴び 5分" },
