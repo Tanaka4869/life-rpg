@@ -122,5 +122,7 @@ export interface PlayerStatus {
   bossMaxHp: number;
   lastBossDate: string;
   bossDefeats: number;
+  todayBattleStat: StatKey | "";   // 当日のバトル用ステータスキー（日次ランダム選択）
+  todayStatGains: Partial<PlayerStats>; // 当日の各ステータス上昇累計
   shownQuestIds?: string[];  // 当日に表示した全クエストID（リフレッシュをまたいで累積）
 }

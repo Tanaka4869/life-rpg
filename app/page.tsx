@@ -122,6 +122,12 @@ export default function Home() {
         );
 
         const newStats = applyStatDeltas(status.stats, result.statDeltas);
+
+        const newTodayStatGains: Partial<import("@/lib/types").PlayerStats> = { ...status.todayStatGains };
+        for (const [key, val] of Object.entries(result.statDeltas) as [import("@/lib/types").StatKey, number][]) {
+          if (val > 0) newTodayStatGains[key] = (newTodayStatGains[key] ?? 0) + val;
+        }
+
         const leveledUpStats = Object.entries(newStats)
           .filter(([k, v]) => Math.floor(v / 100) > (prevStatLevels[k] ?? 0))
           .map(([k, v]) => ({ key: k, newLevel: Math.floor(v / 100) + 1 }));
@@ -135,6 +141,7 @@ export default function Home() {
           strength: Math.max(1, status.strength + result.strengthDelta),
           intelligence: Math.max(1, status.intelligence + result.intelligenceDelta),
           stats: newStats,
+          todayStatGains: newTodayStatGains,
           // ガチャ石獲得 (EXP×10%、最低1)
           gachaStones: status.gachaStones + Math.max(1, Math.floor(Math.abs(result.expGained) * 0.1)),
           // ティアアップ報酬チケット

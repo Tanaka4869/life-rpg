@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import type { PlayerStatus } from "@/lib/types";
 import { getTodayBoss } from "@/data/bosses";
+import { STAT_DEFINITIONS } from "@/data/statConfig";
 
 interface Props {
   status: PlayerStatus;
@@ -26,6 +27,10 @@ function DamageFloat({ value, isPlayer }: { value: number; isPlayer: boolean }) 
 export default function BattlePanel({ status, onBattleResult }: Props) {
   const boss = getTodayBoss(status.level);
   const [anim, setAnim] = useState<BattleAnim>("idle");
+
+  const battleStatKey = status.todayBattleStat || "execution";
+  const battleStatDef = STAT_DEFINITIONS.find((s) => s.key === battleStatKey) ?? STAT_DEFINITIONS[7];
+  const todayGain = (status.todayStatGains?.[battleStatKey] ?? 0);
   const [floats, setFloats] = useState<{ id: number; value: number; isPlayer: boolean }[]>([]);
   const [floatId, setFloatId] = useState(0);
   const [log, setLog] = useState<string[]>([]);
@@ -54,7 +59,7 @@ export default function BattlePanel({ status, onBattleResult }: Props) {
     setAnim("player-attack");
 
     setTimeout(() => {
-      const playerAtk = Math.floor(status.strength / 2) + Math.floor(Math.random() * 10) + 1;
+      const playerAtk = Math.floor(todayGain / 2) + Math.floor(Math.random() * 10) + 3;
       const newBossHp = Math.max(0, status.bossHp - playerAtk);
       addFloat(playerAtk, false);
 
@@ -95,7 +100,7 @@ export default function BattlePanel({ status, onBattleResult }: Props) {
     setAnim("player-attack");
 
     setTimeout(() => {
-      const playerAtk = Math.floor(status.strength / 2) + status.intelligence + Math.floor(Math.random() * 15) + 5;
+      const playerAtk = todayGain + Math.floor(Math.random() * 15) + 5;
       const newBossHp = Math.max(0, status.bossHp - playerAtk);
       addFloat(playerAtk, false);
       addLog(`必殺技発動！ ${playerAtk} の大ダメージ！`);
@@ -176,6 +181,7 @@ export default function BattlePanel({ status, onBattleResult }: Props) {
             <div className="text-xs font-mono text-cyan-400 mt-1">LV.{status.level}</div>
             <div className="text-xs font-mono text-slate-500">HP:{status.hp}</div>
             <div className="text-xs font-mono text-blue-400">Focus:{status.focus}</div>
+            <div className="text-xs font-mono text-yellow-400 mt-1">{battleStatDef.icon}+{todayGain}</div>
           </div>
 
           {/* VS */}
@@ -233,12 +239,17 @@ export default function BattlePanel({ status, onBattleResult }: Props) {
         </div>
       )}
 
-      {/* Stats hint */}
-      <div className="bg-slate-900/40 border border-slate-800/50 rounded-xl p-3">
+      {/* Today's battle stat info */}
+      <div className="bg-slate-900/40 border border-slate-700/50 rounded-xl p-3 space-y-1">
+        <p className="text-slate-400 text-xs font-mono tracking-wider">TODAY&apos;S BATTLE STAT</p>
+        <p className="text-yellow-300 text-sm font-mono font-bold">
+          {battleStatDef.icon} {battleStatDef.label}（{battleStatDef.labelEn}）
+        </p>
         <p className="text-slate-500 text-xs font-mono">
-          攻撃力 = STR/2 + ランダム(1-10)<br />
-          必殺技 = STR/2 + INT + ランダム(1-15)<br />
-          行動記録でSTRとINTを上げてボスを倒せ！
+          本日の上昇量: <span className="text-yellow-400 font-bold">+{todayGain}</span>
+        </p>
+        <p className="text-slate-600 text-xs font-mono mt-1">
+          攻撃 = {battleStatDef.labelEn}/2 + ランダム(3-12)　必殺技 = {battleStatDef.labelEn} + ランダム(5-19)
         </p>
       </div>
     </div>

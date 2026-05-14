@@ -1,7 +1,16 @@
-import type { PlayerStatus } from "./types";
+import type { PlayerStatus, StatKey } from "./types";
 import { generateDailyQuests } from "./quests";
 import { DEFAULT_PLAYER_STATS } from "./statEngine";
 import { getTodayBoss } from "@/data/bosses";
+
+const STAT_KEYS: StatKey[] = [
+  "concentration", "intelligence", "stamina", "health",
+  "housework", "cooking", "muscular", "execution", "cleanliness", "engineering",
+];
+
+function pickRandomStatKey(): StatKey {
+  return STAT_KEYS[Math.floor(Math.random() * STAT_KEYS.length)];
+}
 
 const STORAGE_KEY = "life-rpg-player";
 
@@ -30,6 +39,8 @@ const DEFAULT_STATUS: PlayerStatus = {
   bossMaxHp: 0,
   lastBossDate: "",
   bossDefeats: 0,
+  todayBattleStat: "",
+  todayStatGains: {},
   shownQuestIds: [],
 };
 
@@ -43,6 +54,8 @@ function migrateSaveData(status: PlayerStatus): PlayerStatus {
   if (status.bossMaxHp === undefined) status.bossMaxHp = 0;
   if (!status.lastBossDate) status.lastBossDate = "";
   if (status.bossDefeats === undefined) status.bossDefeats = 0;
+  if (!status.todayBattleStat) status.todayBattleStat = pickRandomStatKey();
+  if (!status.todayStatGains) status.todayStatGains = {};
   if (status.questRefreshCount === undefined) status.questRefreshCount = 0;
   if (!status.shownQuestIds) status.shownQuestIds = [];
   return status;
@@ -77,6 +90,8 @@ export function initNewPlayer(): PlayerStatus {
     bossHp: boss.baseHp,
     bossMaxHp: boss.baseHp,
     lastBossDate: today,
+    todayBattleStat: pickRandomStatKey(),
+    todayStatGains: {},
   };
   saveStatus(status);
   return status;
@@ -109,6 +124,8 @@ function checkDailyReset(status: PlayerStatus): PlayerStatus {
     bossHp: boss.baseHp,
     bossMaxHp: boss.baseHp,
     lastBossDate: today,
+    todayBattleStat: pickRandomStatKey(),
+    todayStatGains: {},
   };
   saveStatus(updated);
   return updated;
