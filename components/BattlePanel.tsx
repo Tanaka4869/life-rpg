@@ -59,7 +59,7 @@ export default function BattlePanel({ status, onBattleResult }: Props) {
     setAnim("player-attack");
 
     setTimeout(() => {
-      const playerAtk = Math.floor(todayGain / 2) + Math.floor(Math.random() * 10) + 3;
+      const playerAtk = todayGain + Math.floor(Math.random() * 10) + 3;
       const newBossHp = Math.max(0, status.bossHp - playerAtk);
       addFloat(playerAtk, false);
 
@@ -100,7 +100,7 @@ export default function BattlePanel({ status, onBattleResult }: Props) {
     setAnim("player-attack");
 
     setTimeout(() => {
-      const playerAtk = todayGain + Math.floor(Math.random() * 15) + 5;
+      const playerAtk = todayGain * 2 + Math.floor(Math.random() * 15) + 5;
       const newBossHp = Math.max(0, status.bossHp - playerAtk);
       addFloat(playerAtk, false);
       addLog(`必殺技発動！ ${playerAtk} の大ダメージ！`);
@@ -249,7 +249,7 @@ export default function BattlePanel({ status, onBattleResult }: Props) {
           本日の上昇量: <span className="text-yellow-400 font-bold">+{todayGain}</span>
         </p>
         <p className="text-slate-600 text-xs font-mono mt-1">
-          攻撃 = {battleStatDef.labelEn}/2 + ランダム(3-12)　必殺技 = {battleStatDef.labelEn} + ランダム(5-19)
+          攻撃 = {battleStatDef.labelEn} + ランダム(3-12)　必殺技 = {battleStatDef.labelEn}×2 + ランダム(5-19)
         </p>
       </div>
     </div>

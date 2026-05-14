@@ -8,12 +8,12 @@ export type StatEffect = Partial<Record<StatKey, number>>;
  */
 export const CATEGORY_STAT_EFFECTS: Record<ActionCategory, StatEffect> = {
   WORK:     { concentration: 8, execution: 16, intelligence: 6, engineering: 3 },
-  EXERCISE: { stamina: 3, muscular: 2, health: 2 },
+  EXERCISE: { stamina: 3, muscular: 5, health: 2 },
   STUDY:    { intelligence: 4, concentration: 2 },
   MEDITATE: { concentration: 5, health: 1 },
   SLEEP:    { health: 2, stamina: 1 },
-  HOUSEWORK: { housework: 4, cleanliness: 4, execution: 1 },
-  COOKING:   { cooking: 5, health: 1 },
+  HOUSEWORK: { housework: 10, cleanliness: 10, execution: 1 },
+  COOKING:   { cooking: 13, health: 1 },
   DEBUFF:   { concentration: -4, health: -2, stamina: -1 },
   UNKNOWN:  { execution: 1 },
 };
@@ -29,7 +29,7 @@ export const KEYWORD_STAT_EFFECTS: Array<{
 }> = [
   {
     keywords: ["筋トレ", "腕立て", "スクワット", "腹筋", "懸垂", "ダンベル", "バーベル", "筋肉"],
-    effects: { muscular: 6, stamina: 3 },
+    effects: { muscular: 15, stamina: 3 },
   },
   {
     keywords: ["ランニング", "ジョギング", "マラソン"],
@@ -65,11 +65,11 @@ export const KEYWORD_STAT_EFFECTS: Array<{
   },
   {
     keywords: ["掃除", "片付け", "整理整頓", "大掃除", "拭き掃除"],
-    effects: { cleanliness: 8, housework: 4 },
+    effects: { cleanliness: 20, housework: 10 },
   },
   {
     keywords: ["洗濯", "干した", "たたんだ", "アイロン"],
-    effects: { cleanliness: 6, housework: 4 },
+    effects: { cleanliness: 15, housework: 10 },
   },
   {
     keywords: ["ヨガ", "ストレッチ"],
@@ -89,11 +89,11 @@ export const KEYWORD_STAT_EFFECTS: Array<{
   },
   {
     keywords: ["肌ケア", "スキンケア", "保湿"],
-    effects: { cleanliness: 12, health: 6 },
+    effects: { cleanliness: 30, health: 6 },
   },
   {
     keywords: ["歯磨き", "歯ブラシ"],
-    effects: { cleanliness: 20, health: 6 },
+    effects: { cleanliness: 50, health: 6 },
   },
   {
     keywords: ["日光浴び", "日光浴", "日光を浴"],
@@ -105,6 +105,6 @@ export const KEYWORD_STAT_EFFECTS: Array<{
   },
   {
     keywords: ["ゴミ捨て"],
-    effects: { cleanliness: 12, housework: 12 },
+    effects: { cleanliness: 30, housework: 30 },
   },
 ];
