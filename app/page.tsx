@@ -197,6 +197,14 @@ export default function Home() {
             }
           }
         }
+        const allQuestsCleared =
+          newCompletedIds.length >= status.todayQuestIds.length &&
+          status.todayQuestIds.length > 0 &&
+          status.completedQuestIds.length < status.todayQuestIds.length;
+        if (allQuestsCleared) {
+          questBonus += 200;
+          questStones += 30;
+        }
         if (questBonus > 0) {
           updated.exp += questBonus;
           updated.level = calcLevel(updated.exp).level;
