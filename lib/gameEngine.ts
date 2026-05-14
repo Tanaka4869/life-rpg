@@ -191,8 +191,8 @@ export function parseAction(text: string): ActionResult {
 }
 
 // ----- Level calculation -----
-export function expForNextLevel(level: number): number {
-  return level * 100;
+export function expForNextLevel(_level: number): number {
+  return 300;
 }
 
 export function calcLevel(totalExp: number): { level: number; currentExp: number; nextLevelExp: number } {
